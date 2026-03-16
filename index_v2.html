@@ -6,835 +6,93 @@
     <title>Class Life - 平行世界教室</title>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=DotGothic16&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-sky: #87CEEB;
-            --bg-wall: #F5E6D3;
-            --bg-floor: #D4A574;
-            --bg-floor-dark: #B8956A;
-            --chalkboard: #3D5A47;
-            --chalkboard-frame: #8B6914;
-            --desk-wood: #C4956A;
-            --desk-dark: #A67B4F;
-            --text-primary: #4A403A;
-            --text-secondary: #8B7E74;
-            --accent-pink: #FFB7C5;
-            --accent-green: #A8D5BA;
-            --accent-yellow: #FFE5B4;
-            --accent-blue: #A8D4E6;
-        }
-
-        body {
-            font-family: 'Zen Maru Gothic', sans-serif;
-            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow: hidden;
-        }
-
-        /* 加载画面 */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-        }
-
-        .loading-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .loading-title {
-            font-size: 48px;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(168, 213, 186, 0.5);
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .loading-bar-container {
-            width: 300px;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .loading-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--accent-green), var(--accent-pink));
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.02); }
-        }
-
-        /* 游戏容器 */
-        .game-container {
-            width: 100%;
-            max-width: 1000px;
-            aspect-ratio: 16/9;
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 
-                0 0 60px rgba(0, 0, 0, 0.5),
-                0 0 100px rgba(168, 213, 186, 0.1),
-                inset 0 0 100px rgba(255, 255, 255, 0.05);
-            background: #000;
-        }
-
-        /* 画布 */
-        #gameCanvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        /* 顶部状态栏 */
-        .top-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 50px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            z-index: 10;
-        }
-
-        .game-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #fff;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .time-display {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-family: 'DotGothic16', monospace;
-            color: #fff;
-            font-size: 16px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
-
-        /* 底部信息栏 */
-        .bottom-bar {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 100%);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            z-index: 10;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-yellow));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-
-        .user-name {
-            color: #fff;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .user-status {
-            color: rgba(255,255,255,0.7);
-            font-size: 12px;
-        }
-
-        .class-stats {
-            display: flex;
-            gap: 20px;
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: rgba(255,255,255,0.8);
-            font-size: 13px;
-        }
-
-        .stat-icon {
-            font-size: 16px;
-        }
-
-        /* 课程提示 */
-        .class-toast {
-            position: absolute;
-            top: 70px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-20px);
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-size: 14px;
-            opacity: 0;
-            transition: all 0.5s ease;
-            z-index: 20;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .class-toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* 粒子效果 */
-        .particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 5;
-            overflow: hidden;
-        }
-
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            animation: float 8s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.5; }
-            90% { opacity: 0.5; }
-            100% { transform: translateY(-200px) rotate(360deg); opacity: 0; }
-        }
-
-        /* 响应式 */
-        @media (max-width: 768px) {
-            .game-container {
-                aspect-ratio: 9/16;
-                max-height: 100vh;
-                max-width: none;
-            }
-
-            .top-bar {
-                height: 40px;
-                padding: 0 15px;
-            }
-
-            .game-title {
-                font-size: 14px;
-            }
-
-            .time-display {
-                font-size: 12px;
-            }
-
-            .bottom-bar {
-                height: 50px;
-                padding: 0 15px;
-            }
-
-            .user-avatar {
-                width: 32px;
-                height: 32px;
-                font-size: 16px;
-            }
-
-            .class-stats {
-                gap: 10px;
-            }
-
-            .stat-item {
-                font-size: 11px;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --accent-pink: #FFB7C5; --accent-green: #A8D5BA; --accent-yellow: #FFE5B4; --accent-blue: #A8D4E6; --glass-bg: rgba(255,255,255,0.15); --glass-border: rgba(255,255,255,0.2); }
+        body { font-family: 'Zen Maru Gothic', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; overflow: hidden; }
+        .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; transition: opacity 0.8s ease, visibility 0.8s ease; }
+        .loading-screen.hidden { opacity: 0; visibility: hidden; }
+        .loading-title { font-size: 56px; font-weight: 700; background: linear-gradient(135deg, #fff 0%, var(--accent-green) 50%, var(--accent-pink) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; animation: glow 2s ease-in-out infinite; }
+        .loading-subtitle { color: rgba(255,255,255,0.6); font-size: 14px; margin-bottom: 30px; letter-spacing: 3px; }
+        .loading-bar-container { width: 280px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+        .loading-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-green), var(--accent-blue), var(--accent-pink)); border-radius: 3px; transition: width 0.3s ease; position: relative; }
+        .loading-bar::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: shimmer 1.5s infinite; }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes glow { 0%, 100% { filter: drop-shadow(0 0 20px rgba(168,213,186,0.5)); } 50% { filter: drop-shadow(0 0 30px rgba(255,183,197,0.5)); } }
+        .game-container { width: 100%; max-width: 1100px; aspect-ratio: 16/9; position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 0 80px rgba(0,0,0,0.6), 0 0 120px rgba(168,213,186,0.15), 0 20px 60px rgba(0,0,0,0.4); background: #000; }
+        #gameCanvas { width: 100%; height: 100%; display: block; }
+        .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 55px; background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: center; padding: 0 25px; z-index: 10; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .game-title { font-size: 20px; font-weight: 700; background: linear-gradient(135deg, #fff 0%, var(--accent-green) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 10px; }
+        .time-display { display: flex; align-items: center; gap: 12px; font-family: 'DotGothic16', monospace; }
+        .current-time { color: #fff; font-size: 24px; text-shadow: 0 0 20px rgba(255,255,255,0.3); }
+        .current-date { color: rgba(255,255,255,0.6); font-size: 13px; text-align: right; line-height: 1.4; }
+        .class-toast { position: absolute; top: 70px; left: 50%; transform: translateX(-50%) translateY(-30px); background: linear-gradient(135deg, rgba(168,213,186,0.95), rgba(168,212,230,0.95)); color: #2d4a3e; padding: 14px 28px; border-radius: 30px; font-size: 15px; font-weight: 500; opacity: 0; transition: all 0.6s cubic-bezier(0.34,1.56,0.64,1); z-index: 20; backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(168,213,186,0.3); display: flex; align-items: center; gap: 10px; }
+        .class-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .bottom-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 70px; background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%); backdrop-filter: blur(20px); display: flex; justify-content: space-between; align-items: center; padding: 0 25px; z-index: 10; border-top: 1px solid rgba(255,255,255,0.05); }
+        .user-info { display: flex; align-items: center; gap: 14px; }
+        .user-avatar-container { position: relative; }
+        .user-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-yellow) 100%); display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 20px rgba(255,183,197,0.3); border: 2px solid rgba(255,255,255,0.3); }
+        .online-indicator { position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; background: #4ade80; border-radius: 50%; border: 2px solid rgba(0,0,0,0.5); }
+        .user-details { display: flex; flex-direction: column; gap: 2px; }
+        .user-name { color: #fff; font-size: 15px; font-weight: 600; }
+        .user-status { color: var(--accent-green); font-size: 12px; display: flex; align-items: center; gap: 6px; }
+        .user-status::before { content: ''; width: 6px; height: 6px; background: var(--accent-green); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .class-stats { display: flex; gap: 25px; }
+        .stat-item { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.85); font-size: 14px; padding: 8px 14px; background: var(--glass-bg); border-radius: 20px; border: 1px solid var(--glass-border); backdrop-filter: blur(10px); }
+        .student-card { position: absolute; background: linear-gradient(145deg, rgba(30,30,50,0.95), rgba(20,20,40,0.95)); border-radius: 16px; padding: 18px; min-width: 200px; opacity: 0; transform: scale(0.9) translateY(10px); transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index: 100; pointer-events: none; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .student-card.show { opacity: 1; transform: scale(1) translateY(0); pointer-events: auto; }
+        .student-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .student-card-avatar { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .student-card-name { color: #fff; font-size: 16px; font-weight: 600; }
+        .student-card-quote { color: rgba(255,255,255,0.5); font-size: 12px; font-style: italic; }
+        .student-card-status { display: flex; align-items: center; gap: 8px; color: var(--accent-green); font-size: 13px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; overflow: hidden; }
+        .particle { position: absolute; width: 3px; height: 3px; background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%); border-radius: 50%; animation: float-particle 10s linear infinite; }
+        @keyframes float-particle { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { transform: translateY(-100px) rotate(720deg); opacity: 0; } }
+        @media (max-width: 768px) { .game-container { aspect-ratio: 9/16; max-height: 100vh; } .top-bar { height: 45px; padding: 0 15px; } .game-title { font-size: 14px; } .current-time { font-size: 18px; } .current-date { display: none; } .bottom-bar { height: 60px; padding: 0 15px; } .user-avatar { width: 36px; height: 36px; font-size: 18px; } .class-stats { gap: 8px; } .stat-item { padding: 6px 10px; font-size: 11px; } }
     </style>
 </head>
 <body>
-    <!-- 加载画面 -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-title">🏫 Class Life</div>
-        <div class="loading-bar-container">
-            <div class="loading-bar" id="loadingBar"></div>
-        </div>
-    </div>
-
-    <!-- 游戏容器 -->
-    <div class="game-container">
-        <canvas id="gameCanvas"></canvas>
-        
-        <!-- 顶部栏 -->
-        <div class="top-bar">
-            <div class="game-title">
-                <span>🏫</span>
-                <span>平行世界教室</span>
-            </div>
-            <div class="time-display">
-                <span id="currentTime">10:42</span>
-                <span>|</span>
-                <span id="currentDate">3月16日(月)</span>
-            </div>
-        </div>
-
-        <!-- 课程提示 -->
-        <div class="class-toast" id="classToast">
-            📚 数学课 - 藤原先生
-        </div>
-
-        <!-- 粒子 -->
+    <div class="loading-screen" id="loadingScreen"><div class="loading-title">🏫 Class Life</div><div class="loading-subtitle">平行世界教室</div><div class="loading-bar-container"><div class="loading-bar" id="loadingBar"></div></div></div>
+    <div class="game-container"><canvas id="gameCanvas"></canvas>
+        <div class="top-bar"><div class="game-title"><span>🏫</span><span>Class Life</span></div><div class="time-display"><div class="current-date"><div id="currentDate">2026年3月16日(月)</div><div id="semester">第二学期</div></div><div class="current-time" id="currentTime">10:42</div></div></div>
+        <div class="class-toast" id="classToast"><span>📚</span><span id="toastText">数学课 - 藤原先生</span></div>
         <div class="particles" id="particles"></div>
-
-        <!-- 底部栏 -->
-        <div class="bottom-bar">
-            <div class="user-info">
-                <div class="user-avatar">😎</div>
-                <div>
-                    <div class="user-name">你</div>
-                    <div class="user-status">在线 · 专注听课</div>
-                </div>
-            </div>
-            <div class="class-stats">
-                <div class="stat-item">
-                    <span class="stat-icon">👥</span>
-                    <span id="onlineCount">12人在线</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-icon">📖</span>
-                    <span id="className">2年B組</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-icon">☀️</span>
-                    <span>第二学期</span>
-                </div>
-            </div>
-        </div>
+        <div class="bottom-bar"><div class="user-info"><div class="user-avatar-container"><div class="user-avatar">😎</div><div class="online-indicator"></div></div><div class="user-details"><div class="user-name" id="userName">你</div><div class="user-status" id="userStatus">专注听课中</div></div></div><div class="class-stats"><div class="stat-item"><span>👥</span><span id="onlineCount">12人在线</span></div><div class="stat-item"><span>🏠</span><span id="className">2年B組</span></div><div class="stat-item"><span>📅</span><span>第2学期</span></div></div></div>
+        <div class="student-card" id="studentCard"><div class="student-card-header"><div class="student-card-avatar" id="cardAvatar">👦</div><div><div class="student-card-name" id="cardName">小明</div><div class="student-card-quote" id="cardQuote">"今天也要加油！"</div></div></div><div class="student-card-status" id="cardStatus"><span>📖</span><span>正在专注听课</span></div></div>
     </div>
-
     <script>
-        // ========== 游戏配置 ==========
-        const CONFIG = {
-            classroom: {
-                wallColor: '#F5E6D3',
-                floorColor: '#D4A574',
-                floorDark: '#B8956A',
-                chalkboardColor: '#3D5A47',
-                chalkboardFrame: '#8B6914',
-                deskColor: '#C4956A',
-                deskDark: '#A67B4F',
-            },
-            colors: {
-                sky: '#87CEEB',
-                window: '#B8E0F0',
-                curtain: '#FFB7C5',
-                door: '#8B6914',
-                doorFrame: '#5D4A0F',
-            }
-        };
-
-        // ========== 学生数据 ==========
-        const students = [
-            { name: '小明', x: 0.15, y: 0.35, status: 'focus', color: '#A8D4E6' },
-            { name: '小红', x: 0.30, y: 0.35, status: 'focus', color: '#FFB7C5' },
-            { name: '小刚', x: 0.45, y: 0.35, status: 'daydream', color: '#A8D4E6' },
-            { name: '小美', x: 0.60, y: 0.35, status: 'focus', color: '#FFB7C5' },
-            { name: '小强', x: 0.75, y: 0.35, status: 'active', color: '#A8D4E6' },
-            
-            { name: '小芳', x: 0.15, y: 0.52, status: 'daydream', color: '#FFB7C5' },
-            { name: '小军', x: 0.30, y: 0.52, status: 'focus', color: '#A8D4E6' },
-            { name: '小兰', x: 0.45, y: 0.52, status: 'dozing', color: '#FFB7C5' },
-            { name: '小杰', x: 0.60, y: 0.52, status: 'focus', color: '#A8D4E6' },
-            { name: '小琴', x: 0.75, y: 0.52, status: 'focus', color: '#FFB7C5' },
-            
-            { name: '小浩', x: 0.15, y: 0.69, status: 'focus', color: '#A8D4E6' },
-            { name: '小霞', x: 0.30, y: 0.69, status: 'active', color: '#FFB7C5' },
-            { name: '小龙', x: 0.45, y: 0.69, status: 'daydream', color: '#A8D4E6' },
-            { name: '小燕', x: 0.60, y: 0.69, status: 'focus', color: '#FFB7C5' },
-            { name: '小虎', x: 0.75, y: 0.69, status: 'focus', color: '#A8D4E6' },
-        ];
-
-        // ========== 画布初始化 ==========
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        let width, height;
-        let time = 0;
-        let particles = [];
-
-        function resize() {
-            const container = canvas.parentElement;
-            width = container.clientWidth;
-            height = container.clientHeight;
-            canvas.width = width * window.devicePixelRatio;
-            canvas.height = height * window.devicePixelRatio;
-            canvas.style.width = width + 'px';
-            canvas.style.height = height + 'px';
-            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-        }
-
-        // ========== 绘制函数 ==========
-        
-        // 绘制教室背景
-        function drawClassroom() {
-            // 墙壁
-            const wallHeight = height * 0.75;
-            ctx.fillStyle = CONFIG.classroom.wallColor;
-            ctx.fillRect(0, 0, width, wallHeight);
-            
-            // 墙壁装饰 - 纹理
-            ctx.fillStyle = 'rgba(0,0,0,0.03)';
-            for (let i = 0; i < width; i += 20) {
-                for (let j = 0; j < wallHeight; j += 20) {
-                    if ((i + j) % 40 === 0) {
-                        ctx.fillRect(i, j, 10, 10);
-                    }
-                }
-            }
-            
-            // 地板
-            const floorY = wallHeight;
-            const floorHeight = height - floorY;
-            
-            // 地板渐变
-            const floorGradient = ctx.createLinearGradient(0, floorY, 0, height);
-            floorGradient.addColorStop(0, CONFIG.classroom.floorColor);
-            floorGradient.addColorStop(1, CONFIG.classroom.floorDark);
-            ctx.fillStyle = floorGradient;
-            ctx.fillRect(0, floorY, width, floorHeight);
-            
-            // 地板线条
-            ctx.strokeStyle = 'rgba(0,0,0,0.1)';
-            ctx.lineWidth = 1;
-            for (let i = 0; i < width; i += 40) {
-                ctx.beginPath();
-                ctx.moveTo(i, floorY);
-                ctx.lineTo(i, height);
-                ctx.stroke();
-            }
-        }
-
-        // 绘制窗户
-        function drawWindows() {
-            const windowWidth = width * 0.15;
-            const windowHeight = height * 0.35;
-            const windowY = height * 0.1;
-            const positions = [0.1, 0.43, 0.76];
-            
-            positions.forEach(pos => {
-                const x = width * pos - windowWidth / 2;
-                
-                // 窗框
-                ctx.fillStyle = '#fff';
-                ctx.fillRect(x - 5, windowY - 5, windowWidth + 10, windowHeight + 10);
-                
-                // 窗户背景 - 天空
-                const skyGradient = ctx.createLinearGradient(x, windowY, x, windowY + windowHeight);
-                skyGradient.addColorStop(0, '#87CEEB');
-                skyGradient.addColorStop(1, '#B8E0F0');
-                ctx.fillStyle = skyGradient;
-                ctx.fillRect(x, windowY, windowWidth, windowHeight);
-                
-                // 窗户格子
-                ctx.strokeStyle = 'rgba(255,255,255,0.8)';
-                ctx.lineWidth = 3;
-                
-                // 垂直格子
-                ctx.beginPath();
-                ctx.moveTo(x + windowWidth / 2, windowY);
-                ctx.lineTo(x + windowWidth / 2, windowY + windowHeight);
-                ctx.stroke();
-                
-                // 水平格子
-                ctx.beginPath();
-                ctx.moveTo(x, windowY + windowHeight / 2);
-                ctx.lineTo(x + windowWidth, windowY + windowHeight / 2);
-                ctx.stroke();
-                
-                // 窗帘
-                drawCurtain(x, windowY, windowWidth, windowHeight);
-            });
-        }
-
-        // 绘制窗帘
-        function drawCurtain(x, y, w, h) {
-            const curtainWidth = w * 0.15;
-            
-            // 左窗帘
-            ctx.fillStyle = 'rgba(255, 183, 197, 0.7)';
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.quadraticCurveTo(x + curtainWidth, y + h * 0.3, x + curtainWidth * 0.5, y + h * 0.5);
-            ctx.quadraticCurveTo(x, y + h * 0.7, x, y + h * 0.8);
-            ctx.lineTo(x, y);
-            ctx.fill();
-            
-            // 右窗帘
-            ctx.beginPath();
-            ctx.moveTo(x + w, y);
-            ctx.quadraticCurveTo(x + w - curtainWidth, y + h * 0.3, x + w - curtainWidth * 0.5, y + h * 0.5);
-            ctx.quadraticCurveTo(x + w, y + h * 0.7, x + w, y + h * 0.8);
-            ctx.lineTo(x + w, y);
-            ctx.fill();
-            
-            // 窗帘褶皱
-            ctx.strokeStyle = 'rgba(255, 100, 130, 0.3)';
-            ctx.lineWidth = 1;
-            for (let i = 1; i < 4; i++) {
-                ctx.beginPath();
-                ctx.moveTo(x + curtainWidth * i * 0.3, y);
-                ctx.quadraticCurveTo(x + curtainWidth * i * 0.3, y + h * 0.5, x + curtainWidth * i * 0.2, y + h * 0.8);
-                ctx.stroke();
-            }
-        }
-
-        // 绘制黑板
-        function drawBlackboard() {
-            const boardWidth = width * 0.4;
-            const boardHeight = height * 0.25;
-            const boardX = width / 2 - boardWidth / 2;
-            const boardY = height * 0.15;
-            
-            // 黑板框
-            ctx.fillStyle = CONFIG.classroom.chalkboardFrame;
-            ctx.fillRect(boardX - 8, boardY - 8, boardWidth + 16, boardHeight + 16);
-            
-            // 黑板
-            const boardGradient = ctx.createLinearGradient(boardX, boardY, boardX, boardY + boardHeight);
-            boardGradient.addColorStop(0, '#4A5548');
-            boardGradient.addColorStop(1, '#3D4A3C');
-            ctx.fillStyle = boardGradient;
-            ctx.fillRect(boardX, boardY, boardWidth, boardHeight);
-            
-            // 黑板纹理
-            ctx.fillStyle = 'rgba(255,255,255,0.02)';
-            for (let i = 0; i < boardWidth; i += 4) {
-                for (let j = 0; j < boardHeight; j += 4) {
-                    if ((i + j) % 8 === 0) {
-                        ctx.fillRect(boardX + i, boardY + j, 2, 2);
-                    }
-                }
-            }
-            
-            // 板书 - 课程内容
-            ctx.fillStyle = '#F5F5DC';
-            ctx.font = `bold ${boardHeight * 0.25}px "Zen Maru Gothic"`;
-            ctx.textAlign = 'center';
-            ctx.fillText('数学', boardX + boardWidth / 2, boardY + boardHeight * 0.45);
-            
-            ctx.font = `${boardHeight * 0.15}px "Zen Maru Gothic"`;
-            ctx.fillText('藤原先生', boardX + boardWidth / 2, boardY + boardHeight * 0.7);
-            
-            // 粉笔槽
-            ctx.fillStyle = '#6B4D0F';
-            ctx.fillRect(boardX + 10, boardY + boardHeight - 5, boardWidth - 20, 8);
-        }
-
-        // 绘制讲台
-        function drawPodium() {
-            const podiumWidth = width * 0.25;
-            const podiumHeight = height * 0.08;
-            const podiumX = width / 2 - podiumWidth / 2;
-            const podiumY = height * 0.72;
-            
-            // 讲台
-            const podiumGradient = ctx.createLinearGradient(podiumX, podiumY, podiumX, podiumY + podiumHeight);
-            podiumGradient.addColorStop(0, '#8B6914');
-            podiumGradient.addColorStop(1, '#6B4D0F');
-            ctx.fillStyle = podiumGradient;
-            ctx.fillRect(podiumX, podiumY, podiumWidth, podiumHeight);
-            
-            // 讲台顶部
-            ctx.fillStyle = '#5D4A0F';
-            ctx.fillRect(podiumX + 10, podiumY - 8, podiumWidth - 20, 12);
-        }
-
-        // 绘制课桌
-        function drawDesks() {
-            const deskWidth = width * 0.12;
-            const deskHeight = height * 0.08;
-            const startY = height * 0.38;
-            const gapY = height * 0.17;
-            const gapX = width * 0.15;
-            const startX = width * 0.18;
-            
-            for (let row = 0; row < 3; row++) {
-                for (let col = 0; col < 5; col++) {
-                    const x = startX + col * gapX;
-                    const y = startY + row * gapY;
-                    
-                    // 桌腿
-                    ctx.fillStyle = CONFIG.classroom.deskDark;
-                    ctx.fillRect(x + 5, y + deskHeight * 0.3, 4, deskHeight * 0.7);
-                    ctx.fillRect(x + deskWidth - 9, y + deskHeight * 0.3, 4, deskHeight * 0.7);
-                    
-                    // 桌面
-                    const deskGradient = ctx.createLinearGradient(x, y, x, y + deskHeight * 0.3);
-                    deskGradient.addColorStop(0, CONFIG.classroom.deskColor);
-                    deskGradient.addColorStop(1, CONFIG.classroom.deskDark);
-                    ctx.fillStyle = deskGradient;
-                    
-                    // 圆角矩形
-                    ctx.beginPath();
-                    ctx.roundRect(x, y, deskWidth, deskHeight * 0.3, 3);
-                    ctx.fill();
-                }
-            }
-        }
-
-        // 绘制学生
-        function drawStudents() {
-            students.forEach((student, index) => {
-                const x = width * student.x;
-                const y = height * student.y;
-                const size = Math.min(width, height) * 0.06;
-                
-                // 阴影
-                ctx.fillStyle = 'rgba(0,0,0,0.2)';
-                ctx.beginPath();
-                ctx.ellipse(x, y + size * 0.6, size * 0.4, size * 0.15, 0, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // 身体
-                ctx.fillStyle = student.color;
-                ctx.beginPath();
-                ctx.arc(x, y, size * 0.5, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // 头发/头部装饰
-                ctx.fillStyle = student.color === '#A8D4E6' ? '#5D8AA8' : '#8B4557';
-                ctx.beginPath();
-                ctx.arc(x, y - size * 0.15, size * 0.35, Math.PI, 0);
-                ctx.fill();
-                
-                // 眼睛
-                const eyeOffset = size * 0.15;
-                ctx.fillStyle = '#333';
-                ctx.beginPath();
-                ctx.arc(x - eyeOffset, y - size * 0.05, 3, 0, Math.PI * 2);
-                ctx.arc(x + eyeOffset, y - size * 0.05, 3, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // 状态图标
-                drawStatusIcon(x + size * 0.4, y - size * 0.5, student.status);
-            });
-        }
-
-        // 绘制状态图标
-        function drawStatusIcon(x, y, status) {
-            ctx.font = '16px Arial';
-            ctx.textAlign = 'center';
-            
-            switch(status) {
-                case 'focus':
-                    ctx.fillText('📖', x, y);
-                    break;
-                case 'daydream':
-                    // 浮动效果
-                    const floatY = y + Math.sin(time * 0.002) * 3;
-                    ctx.fillText('🌸', x, floatY);
-                    break;
-                case 'dozing':
-                    // 睡觉动画
-                    const sleepY = y + Math.sin(time * 0.003) * 2;
-                    ctx.fillText('💤', x, sleepY);
-                    // ZZZ
-                    ctx.font = '10px DotGothic16';
-                    ctx.fillText('Z', x + 12, y - 5 + Math.sin(time * 0.005) * 3);
-                    ctx.fillText('z', x + 20, y - 10 + Math.sin(time * 0.005 + 1) * 3);
-                    break;
-                case 'active':
-                    ctx.fillText('✋', x, y);
-                    break;
-            }
-        }
-
-        // 绘制装饰元素
-        function drawDecorations() {
-            // 时钟
-            const clockX = width * 0.92;
-            const clockY = height * 0.08;
-            const clockRadius = 25;
-            
-            ctx.fillStyle = '#fff';
-            ctx.beginPath();
-            ctx.arc(clockX, clockY, clockRadius, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.strokeStyle = '#333';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            
-            // 时针
-            const hourAngle = (10 + 42/60) / 12 * Math.PI * 2 - Math.PI / 2;
-            ctx.beginPath();
-            ctx.moveTo(clockX, clockY);
-            ctx.lineTo(clockX + Math.cos(hourAngle) * 12, clockY + Math.sin(hourAngle) * 12);
-            ctx.stroke();
-            
-            // 分针
+        const CONFIG = { classroom: { wallColor: '#E8DED3', wallAccent: '#F5EBE0', floorColor: '#C9A87C', floorDark: '#A88B5E', chalkboardColor: '#3D5A47', chalkboardLight: '#4A6558', chalkboardFrame: '#7A5A14', deskColor: '#C4956A', deskDark: '#A67B4F' }, colors: { sky: '#87CEEB', skyGradient: '#B8E0F0', curtain: '#FFB7C5', curtainDark: '#E8A0B0' } };
+        const students = [{ id: 1, name: '小明', x: 0.15, y: 0.38, status: 'focus', color: '#A8D4E6', hair: '#5D8AA8', quote: '今天也要加油！' },{ id: 2, name: '小红', x: 0.30, y: 0.38, status: 'focus', color: '#FFB7C5', hair: '#8B4557', quote: '好想快点下课呀～' },{ id: 3, name: '小刚', x: 0.45, y: 0.38, status: 'daydream', color: '#A8D4E6', hair: '#5D8AA8', quote: '窗外的小鸟...' },{ id: 4, name: '小美', x: 0.60, y: 0.38, status: 'focus', color: '#FFB7C5', hair: '#8B4557', quote: '这道题好难啊' },{ id: 5, name: '小强', x: 0.75, y: 0.38, status: 'active', color: '#A8D4E6', hair: '#5D8AA8', quote: '老师！我知道！' },{ id: 6, name: '小芳', x: 0.15, y: 0.55, status: 'daydream', color: '#FFB7C5', hair: '#8B4557', quote: '中午吃什么呢' },{ id: 7, name: '小军', x: 0.30, y: 0.55, status: 'focus', color: '#A8D4E6', hair: '#5D8AA8', quote: '认真听讲中...' },{ id: 8, name: '小兰', x: 0.45, y: 0.55, status: 'dozing', color: '#FFB7C5', hair: '#8B4557', quote: 'zzz...' },{ id: 9, name: '小杰', x: 0.60, y: 0.55, status: 'focus', color: '#A8D4E6', hair: '#5D8AA8', quote: '笔记要做好' },{ id: 10, name: '小琴', x: 0.75, y: 0.55, status: 'focus', color: '#FFB7C5', hair: '#8B4557', quote: '好困啊...' },{ id: 11, name: '小浩', x: 0.15, y: 0.72, status: 'focus', color: '#A8D4E6', hair: '#5D8AA8', quote: '考试加油！' },{ id: 12, name: '小霞', x: 0.30, y: 0.72, status: 'active', color: '#FFB7C5', hair: '#8B4557', quote: '有人要借笔吗' },{ id: 13, name: '小龙', x: 0.45, y: 0.72, status: 'daydream', color: '#A8D4E6', hair: '#5D8AA8', quote: '放学去打球' },{ id: 14, name: '小燕', x: 0.60, y: 0.72, status: 'focus', color: '#FFB7C5', hair: '#8B4557', quote: '这道题我会！' },{ id: 15, name: '小虎', x: 0.75, y: 0.72, status: 'focus', color: '#A8D4E6', hair: '#5D8AA8', quote: '肚子饿了...' }];
+        const canvas = document.getElementById('gameCanvas'); const ctx = canvas.getContext('2d');
+        let width, height, time = 0, mouseX = 0, mouseY = 0, hoveredStudent = null;
+        let clouds = Array(5).fill(0).map(() => ({ x: Math.random() * 200 - 100, y: 30 + Math.random() * 40, size: 30 + Math.random() * 40, speed: 0.2 + Math.random() * 0.3 }));
+        function resize() { const container = canvas.parentElement; width = container.clientWidth; height = container.clientHeight; canvas.width = width * window.devicePixelRatio; canvas.height = height * window.devicePixelRatio; canvas.style.width = width + 'px'; canvas.style.height = height + 'px'; ctx.scale(window.devicePixelRatio, window.devicePixelRatio); }
+        function shadeColor(color, percent) { let num = parseInt(color.replace('#',''), 16), amt = Math.round(2.55 * percent), R = (num >> 16) + amt, G = (num >> 8 & 0x00FF) + amt, B = (num & 0x0000FF) + amt; return '#' + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1); }
+        function drawClassroom() { const wallHeight = height * 0.78; const wallGradient = ctx.createLinearGradient(0, 0, 0, wallHeight); wallGradient.addColorStop(0, CONFIG.classroom.wallAccent); wallGradient.addColorStop(1, CONFIG.classroom.wallColor); ctx.fillStyle = wallGradient; ctx.fillRect(0, 0, width, wallHeight); ctx.fillStyle = 'rgba(0,0,0,0.02)'; for (let i = 0; i < width; i += 15) for (let j = 0; j < wallHeight; j += 15) if (Math.random() > 0.7) { ctx.beginPath(); ctx.arc(i, j, 1, 0, Math.PI * 2); ctx.fill(); } ctx.fillStyle = 'rgba(0,0,0,0.08)'; ctx.fillRect(0, wallHeight - 3, width, 3); const floorY = wallHeight, floorHeight = height - wallHeight; const floorGradient = ctx.createLinearGradient(0, floorY, 0, height); floorGradient.addColorStop(0, CONFIG.classroom.floorColor); floorGradient.addColorStop(1, CONFIG.classroom.floorDark); ctx.fillStyle = floorGradient; ctx.fillRect(0, floorY, width, floorHeight); ctx.strokeStyle = 'rgba(0,0,0,0.08)'; for (let i = 20; i < width; i += 35) { ctx.beginPath(); ctx.moveTo(i, floorY); ctx.lineTo(i, height); ctx.stroke(); } ctx.fillStyle = 'rgba(255,255,255,0.03)'; ctx.fillRect(0, floorY, width, floorHeight * 0.3); }
+        function drawWindows() { const windowWidth = width * 0.14, windowHeight = height * 0.38, windowY = height * 0.08; [0.1, 0.43, 0.76].forEach((pos, idx) => { const x = width * pos - windowWidth / 2; ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.fillRect(x - 3, windowY - 3, windowWidth + 6, windowHeight + 6); ctx.fillStyle = '#fff'; ctx.fillRect(x - 6, windowY - 6, windowWidth + 12, windowHeight + 12); const skyGradient = ctx.createLinearGradient(x, windowY, x, windowY + windowHeight); skyGradient.addColorStop(0, CONFIG.colors.sky); skyGradient.addColorStop(1, CONFIG.colors.skyGradient); ctx.fillStyle = skyGradient; ctx.fillRect(x, windowY, windowWidth, windowHeight); const cloud = clouds[idx]; drawCloud(x + windowWidth/2 + cloud.x, windowY + cloud.y, cloud.size); ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(x + windowWidth / 2, windowY + 5); ctx.lineTo(x + windowWidth / 2, windowY + windowHeight - 5); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x + 5, windowY + windowHeight / 2); ctx.lineTo(x + windowWidth - 5, windowY + windowHeight / 2); ctx.stroke(); drawCurtain(x, windowY, windowWidth, windowHeight); }); }
+        function drawCloud(x, y, size) { ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.beginPath(); ctx.arc(x, y, size * 0.4, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(x + size * 0.3, y - size * 0.1, size * 0.3, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(x + size * 0.6, y, size * 0.35, 0, Math.PI * 2); ctx.fill(); }
+        function drawCurtain(x, y, w, h) { const curtainWidth = w * 0.18; const leftGradient = ctx.createLinearGradient(x, y, x + curtainWidth, y); leftGradient.addColorStop(0, CONFIG.colors.curtainDark); leftGradient.addColorStop(1, CONFIG.colors.curtain); ctx.fillStyle = leftGradient; ctx.beginPath(); ctx.moveTo(x, y); ctx.quadraticCurveTo(x + curtainWidth * 0.5, y + h * 0.2, x + curtainWidth, y + h * 0.35); ctx.quadraticCurveTo(x + curtainWidth * 0.8, y + h * 0.6, x + curtainWidth * 0.6, y + h * 0.85); ctx.quadraticCurveTo(x + curtainWidth * 0.3, y + h, x, y + h); ctx.lineTo(x, y); ctx.fill(); const rightGradient = ctx.createLinearGradient(x + w, y, x + w - curtainWidth, y); rightGradient.addColorStop(0, CONFIG.colors.curtainDark); rightGradient.addColorStop(1, CONFIG.colors.curtain); ctx.fillStyle = rightGradient; ctx.beginPath(); ctx.moveTo(x + w, y); ctx.quadraticCurveTo(x + w - curtainWidth * 0.5, y + h * 0.2, x + w - curtainWidth, y + h * 0.35); ctx.quadraticCurveTo(x + w - curtainWidth * 0.8, y + h * 0.6, x + w - curtainWidth * 0.6, y + h * 0.85); ctx.quadraticCurveTo(x + w - curtainWidth * 0.3, y + h, x + w, y + h); ctx.lineTo(x + w, y); ctx.fill(); }
+        function drawBlackboard() { const boardWidth = width * 0.38, boardHeight = height * 0.26; const boardX = width / 2 - boardWidth / 2, boardY = height * 0.12; ctx.fillStyle = CONFIG.classroom.chalkboardFrame; ctx.fillRect(boardX - 10, boardY - 10, boardWidth + 20, boardHeight + 20); ctx.strokeStyle = '#5D4A0F'; ctx.lineWidth = 3; ctx.strokeRect(boardX - 10, boardY - 10, boardWidth + 20, boardHeight + 20); const boardGradient = ctx.createLinearGradient(boardX, boardY, boardX, boardY + boardHeight); boardGradient.addColorStop(0, CONFIG.classroom.chalkboardLight); boardGradient.addColorStop(1, CONFIG.classroom.chalkboardColor); ctx.fillStyle = boardGradient; ctx.fillRect(boardX, boardY, boardWidth, boardHeight); ctx.fillStyle = 'rgba(255,255,255,0.03)'; for (let i = 0; i < boardWidth; i += 3) for (let j = 0; j < boardHeight; j += 3) if (Math.random() > 0.8) { ctx.fillRect(boardX + i, boardY + j, 2, 2); } ctx.fillStyle = '#F5F5DC'; ctx.font = `bold ${boardHeight * 0.28}px "Zen Maru Gothic", cursive`; ctx.textAlign = 'center'; ctx.shadowColor = 'rgba(0,0,0,0.2)'; ctx.shadowBlur = 2; ctx.fillText('数 学', boardX + boardWidth / 2, boardY + boardHeight * 0.45); ctx.font = `${boardHeight * 0.16}px "Zen Maru Gothic"`; ctx.fillText('～ 藤原先生 ～', boardX + boardWidth / 2, boardY + boardHeight * 0.7); ctx.shadowBlur = 0; ctx.fillStyle = '#5D4A0F'; ctx.fillRect(boardX + 15, boardY + boardHeight - 8, boardWidth - 30, 10); ctx.fillStyle = '#fff'; ctx.fillRect(boardX + 30, boardY + boardHeight - 5, 20, 4); ctx.fillStyle = '#FFD700'; ctx.fillRect(boardX + 55, boardY + boardHeight - 5, 15, 4); }
+        function drawPodium() { const podiumWidth = width * 0.28, podiumHeight = height * 0.1; const podiumX = width / 2 - podiumWidth / 2, podiumY = height * 0.70; const podiumGradient = ctx.createLinearGradient(podiumX, podiumY, podiumX, podiumY + podiumHeight); podiumGradient.addColorStop(0, '#8B6914'); podiumGradient.addColorStop(1, '#6B4D0F'); ctx.fillStyle = podiumGradient; ctx.fillRect(podiumX, podiumY, podiumWidth, podiumHeight); ctx.fillStyle = '#5D4A0F'; ctx.fillRect(podiumX + 15, podiumY - 12, podiumWidth - 30, 15); ctx.fillStyle = '#4A3A0F'; ctx.fillRect(podiumX + 25, podiumY - 18, podiumWidth - 50, 8); }
+        function drawDesks() { const deskWidth = width * 0.11, deskHeight = height * 0.085; const startY = height * 0.41, gapY = height * 0.17, gapX = width * 0.15, startX = width * 0.17; for (let row = 0; row < 3; row++) { for (let col = 0; col < 5; col++) { const x = startX + col * gapX, y = startY + row * gapY; ctx.fillStyle = CONFIG.classroom.deskDark; ctx.fillRect(x + 5, y + deskHeight * 0.35, 5, deskHeight * 0.65); ctx.fillRect(x + deskWidth - 10, y + deskHeight * 0.35, 5, deskHeight * 0.65); const deskGradient = ctx.createLinearGradient(x, y, x, y + deskHeight * 0.35); deskGradient.addColorStop(0, CONFIG.classroom.deskColor); deskGradient.addColorStop(1, CONFIG.classroom.deskDark); ctx.fillStyle = deskGradient; ctx.beginPath(); ctx.roundRect(x, y, deskWidth, deskHeight * 0.35, 3); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,0.1)'; ctx.fillRect(x + 3, y + 2, deskWidth - 6, 3); } } }
+        function drawStudents() { students.forEach((student, index) => { const x = width * student.x, y = height * student.y; const size = Math.min(width, height) * 0.055; ctx.fillStyle = 'rgba(0,0,0,0.15)'; ctx.beginPath(); ctx.ellipse(x, y + size * 0.65, size * 0.45, size * 0.12, 0, 0, Math.PI * 2); ctx.fill(); const bodyGradient = ctx.createLinearGradient(x - size * 0.5, y, x + size * 0.5, y); bodyGradient.addColorStop(0, student.color); bodyGradient.addColorStop(1, shadeColor(student.color, -20)); ctx.fillStyle = bodyGradient; ctx.beginPath(); ctx.arc(x, y, size * 0.55, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = student.hair; ctx.beginPath(); ctx.arc(x, y - size * 0.12, size * 0.38, Math.PI, 0); ctx.fill(); ctx.beginPath(); ctx.ellipse(x - size * 0.25, y - size * 0.05, size * 0.12, size * 0.18, -0.3, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.ellipse(x + size * 0.25, y - size * 0.05, size * 0.12, size * 0.18, 0.3, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#333'; const eyeY = y - size * 0.05, blinkOffset = student.status === 'dozing' ? 2 : 0; ctx.beginPath(); ctx.ellipse(x - size * 0.15, eyeY, 3, 4 - blinkOffset, 0, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.ellipse(x + size * 0.15, eyeY, 3, 4 - blinkOffset, 0, 0, Math.PI * 2); ctx.fill(); if (student.status === 'daydream') { ctx.strokeStyle = '#333'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(x + size * 0.25, eyeY - 8, 4, 0.2, Math.PI - 0.2); ctx.stroke(); } else if (student.status === 'dozing') { ctx.fillStyle = '#FFB7C5'; ctx.beginPath(); ctx.ellipse(x + size * 0.1, y + size * 0.25, size * 0.15, size * 0.08, 0.2, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#333'; ctx.font = `${size * 0.25}px Arial`; ctx.textAlign = 'center'; const zOffset = Math.sin(time * 0.003) * 3; ctx.fillText('Z', x + size * 0.5, y - size * 0.5 + zOffset); ctx.fillText('z', x + size * 0.65, y - size * 0.6 + zOffset + Math.sin(time * 0.003 + 1) * 2); } drawStatusIcon(x + size * 0.5, y - size * 0.6, student.status); }); }
+        function drawStatusIcon(x, y, status) { ctx.font = `${Math.min(width, height) * 0.022}px Arial`; ctx.textAlign = 'center'; const floatY = y + Math.sin(time * 0.002) * 4; switch(status) { case 'focus': ctx.fillText('📖', x, y); break; case 'daydream': ctx.fillText('🌸', x, floatY); break; case 'dozing': ctx.fillText('💤', x, floatY); break; case 'active': ctx.fillText('✋', x, y); break; } }
+        function drawDecorations() { const clockX = width * 0.92, clockY = height * 0.08, clockRadius = 28; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(clockX, clockY, clockRadius, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.stroke(); const hourAngle = (10 + 42/60) / 12 * Math.PI * 2 - Math.PI
+        const hourAngle = (10 + 42/60) / 12 * Math.PI * 2 - Math.PI / 2;
+            ctx.beginPath(); ctx.moveTo(clockX, clockY); ctx.lineTo(clockX + Math.cos(hourAngle) * 14, clockY + Math.sin(hourAngle) * 14); ctx.stroke();
             const minuteAngle = 42 / 60 * Math.PI * 2 - Math.PI / 2;
-            ctx.beginPath();
-            ctx.moveTo(clockX, clockY);
-            ctx.lineTo(clockX + Math.cos(minuteAngle) * 18, clockY + Math.sin(minuteAngle) * 18);
-            ctx.stroke();
-            
-            // 挂饰
-            const decorX = width * 0.08;
-            const decorY = height * 0.12;
-            
-            // 班级标识
-            ctx.fillStyle = '#FFB7C5';
-            ctx.beginPath();
-            ctx.roundRect(decorX - 30, decorY - 15, 60, 30, 5);
-            ctx.fill();
-            
-            ctx.fillStyle = '#4A403A';
-            ctx.font = 'bold 14px "Zen Maru Gothic"';
-            ctx.textAlign = 'center';
-            ctx.fillText('2年B組', decorX, decorY + 5);
+            ctx.beginPath(); ctx.moveTo(clockX, clockY); ctx.lineTo(clockX + Math.cos(minuteAngle) * 20, clockY + Math.sin(minuteAngle) * 20); ctx.stroke();
+            const decorX = width * 0.08, decorY = height * 0.12;
+            ctx.fillStyle = '#FFB7C5'; ctx.beginPath(); ctx.roundRect(decorX - 35, decorY - 18, 70, 36, 6); ctx.fill();
+            ctx.fillStyle = '#4A403A'; ctx.font = 'bold 15px "Zen Maru Gothic"'; ctx.textAlign = 'center'; ctx.fillText('2年B組', decorX, decorY + 6);
         }
-
-        // ========== 主循环 ==========
-        function draw() {
-            time = Date.now();
-            
-            // 清空画布
-            ctx.clearRect(0, 0, width, height);
-            
-            // 绘制各个图层
-            drawClassroom();
-            drawWindows();
-            drawBlackboard();
-            drawDesks();
-            drawStudents();
-            drawPodium();
-            drawDecorations();
-            
-            requestAnimationFrame(draw);
-        }
-
-        // ========== 加载动画 ==========
-        function simulateLoading() {
-            const loadingBar = document.getElementById('loadingBar');
-            const loadingScreen = document.getElementById('loadingScreen');
-            let progress = 0;
-            
-            const interval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    
-                    setTimeout(() => {
-                        loadingScreen.classList.add('hidden');
-                        showClassToast();
-                    }, 300);
-                }
-                loadingBar.style.width = progress + '%';
-            }, 150);
-        }
-
-        // ========== 课程提示 ==========
-        function showClassToast() {
-            const toast = document.getElementById('classToast');
-            setTimeout(() => {
-                toast.classList.add('show');
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 3000);
-            }, 1000);
-        }
-
-        // ========== 创建粒子 ==========
-        function createParticles() {
-            const container = document.getElementById('particles');
-            for (let i = 0; i < 15; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 8 + 's';
-                particle.style.animationDuration = (6 + Math.random() * 4) + 's';
-                container.appendChild(particle);
-            }
-        }
-
-        // ========== 更新时间 ==========
-        function updateTime() {
-            const now = new Date();
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            document.getElementById('currentTime').textContent = `${hours}:${minutes}`;
-            
-            const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
-            const days = ['日', '月', '火', '水', '木', '金', '土'];
-            document.getElementById('currentDate').textContent = 
-                `${months[now.getMonth()]}${now.getDate()}日(${days[now.getDay()]})`;
-        }
-
-        // ========== 初始化 ==========
-        function init() {
-            resize();
-            window.addEventListener('resize', resize);
-            
-            createParticles();
-            updateTime();
-            setInterval(updateTime, 1000);
-            
-            simulateLoading();
-            draw();
-        }
-
+        function draw() { time = Date.now(); ctx.clearRect(0, 0, width, height); clouds.forEach(c => { c.x += c.speed; if (c.x > 200) c.x = -100; }); drawClassroom(); drawWindows(); drawBlackboard(); drawDesks(); drawStudents(); drawPodium(); drawDecorations(); requestAnimationFrame(draw); }
+        function simulateLoading() { const loadingBar = document.getElementById('loadingBar'); const loadingScreen = document.getElementById('loadingScreen'); let progress = 0; const interval = setInterval(() => { progress += Math.random() * 20; if (progress >= 100) { progress = 100; clearInterval(interval); setTimeout(() => { loadingScreen.classList.add('hidden'); showClassToast(); }, 400); } loadingBar.style.width = progress + '%'; }, 120); }
+        function showClassToast() { const toast = document.getElementById('classToast'); setTimeout(() => { toast.classList.add('show'); setTimeout(() => { toast.classList.remove('show'); }, 4000); }, 800); }
+        function createParticles() { const container = document.getElementById('particles'); for (let i = 0; i < 20; i++) { const particle = document.createElement('div'); particle.className = 'particle'; particle.style.left = Math.random() * 100 + '%'; particle.style.animationDelay = Math.random() * 10 + 's'; particle.style.animationDuration = (8 + Math.random() * 4) + 's'; container.appendChild(particle); } }
+        function updateTime() { const now = new Date(); const hours = now.getHours().toString().padStart(2, '0'); const minutes = now.getMinutes().toString().padStart(2, '0'); document.getElementById('currentTime').textContent = `${hours}:${minutes}`; const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']; const days = ['日', '月', '火', '水', '木', '金', '土']; document.getElementById('currentDate').textContent = `${months[now.getMonth()]}${now.getDate()}日(${days[now.getDay()]})`; }
+        function init() { resize(); window.addEventListener('resize', resize); createParticles(); updateTime(); setInterval(updateTime, 1000); simulateLoading(); draw(); }
         init();
     </script>
 </body>
