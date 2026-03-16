@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Class Life - 平行世界教室</title>
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=DotGothic16&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --accent-pink: #FFB7C5; --accent-green: #A8D5BA; --accent-yellow: #FFE5B4; --accent-blue: #A8D4E6; }
-        body { font-family: 'Zen Maru Gothic', sans-serif; background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; overflow: hidden; }
+        :root { --accent-pink: #FFB7C5; --accent-green: #A8D5BA; --accent-yellow: #FFE5B4; --accent-blue: #A8D4E6; --accent-orange: #FFD93D; }
+        body { font-family: 'Noto Sans SC', 'ZCOOL KuaiLe', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; overflow: hidden; }
         
-        .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0f0c29, #302b63); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; transition: opacity 1s ease; }
+        .loading-screen { position: fixed; inset: 0; background: linear-gradient(135deg, #1a1a2e, #16213e); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; transition: opacity 1s ease; }
         .loading-screen.hidden { opacity: 0; pointer-events: none; }
-        .loading-title { font-size: 72px; font-weight: 700; background: linear-gradient(135deg, #fff 30%, var(--accent-green) 70%, var(--accent-pink) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: float 3s ease-in-out infinite; }
+        .loading-title { font-size: 72px; font-weight: 700; background: linear-gradient(135deg, #fff 30%, var(--accent-green) 70%, var(--accent-orange) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: float 3s ease-in-out infinite; }
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-        .loading-subtitle { color: rgba(255,255,255,0.5); font-size: 16px; margin: 20px 0 40px; letter-spacing: 8px; }
+        .loading-subtitle { color: rgba(255,255,255,0.5); font-size: 18px; margin: 20px 0 40px; letter-spacing: 8px; }
         .loading-bar-container { width: 300px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
-        .loading-bar { height: 100%; width: 0%; background: linear-gradient(90deg, transparent, var(--accent-green), var(--accent-pink), transparent); transition: width 0.3s; }
+        .loading-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-green), var(--accent-orange)); transition: width 0.3s; }
         
         .game-container { width: 100%; max-width: 1200px; aspect-ratio: 16/9; position: relative; border-radius: 24px; overflow: hidden; box-shadow: 0 0 100px rgba(168,213,186,0.2), 0 30px 60px rgba(0,0,0,0.5); }
         #gameCanvas { width: 100%; height: 100%; }
@@ -24,15 +24,15 @@
         .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 60px; background: linear-gradient(180deg, rgba(0,0,0,0.8), transparent); display: flex; justify-content: space-between; align-items: center; padding: 0 30px; z-index: 10; }
         .game-title { font-size: 22px; font-weight: 700; background: linear-gradient(135deg, #fff, var(--accent-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .time-box { text-align: right; }
-        .current-time { color: #fff; font-size: 28px; font-family: 'DotGothic16'; text-shadow: 0 0 20px rgba(168,213,186,0.5); }
+        .current-time { color: #fff; font-size: 28px; text-shadow: 0 0 20px rgba(168,213,186,0.5); }
         .current-date { color: rgba(255,255,255,0.6); font-size: 12px; }
         
-        .class-toast { position: absolute; top: 75px; left: 50%; transform: translateX(-50%) translateY(-20px); background: linear-gradient(135deg, rgba(168,213,186,0.95), rgba(255,183,197,0.9)); color: #333; padding: 12px 30px; border-radius: 30px; font-weight: 500; opacity: 0; transition: all 0.5s cubic-bezier(0.34,1.56,0.64,1); z-index: 20; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+        .class-toast { position: absolute; top: 75px; left: 50%; transform: translateX(-50%) translateY(-20px); background: linear-gradient(135deg, rgba(168,213,186,0.95), rgba(255,217,61,0.9)); color: #333; padding: 12px 30px; border-radius: 30px; font-weight: 500; opacity: 0; transition: all 0.5s cubic-bezier(0.34,1.56,0.64,1); z-index: 20; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
         .class-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         
         .bottom-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(0deg, rgba(0,0,0,0.9), transparent); display: flex; justify-content: space-between; align-items: center; padding: 0 30px; z-index: 10; }
         .user-box { display: flex; align-items: center; gap: 15px; }
-        .avatar { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-pink), var(--accent-yellow)); display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 30px rgba(255,183,197,0.5); position: relative; }
+        .avatar { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-pink), var(--accent-orange)); display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 30px rgba(255,183,197,0.5); position: relative; }
         .avatar::after { content: ''; position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background: #4ade80; border-radius: 50%; border: 2px solid #000; }
         .user-info { color: #fff; }
         .user-name { font-weight: 600; font-size: 16px; }
@@ -40,14 +40,6 @@
         
         .stats { display: flex; gap: 20px; }
         .stat { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; backdrop-filter: blur(10px); }
-        
-        .student-card { position: absolute; background: linear-gradient(145deg, rgba(20,20,40,0.98), rgba(10,10,30,0.98)); border-radius: 20px; padding: 20px; min-width: 220px; opacity: 0; transform: scale(0.8); transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index: 100; pointer-events: none; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
-        .student-card.show { opacity: 1; transform: scale(1); pointer-events: auto; }
-        .card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-        .card-avatar { width: 55px; height: 55px; border-radius: 50%; font-size: 30px; }
-        .card-name { color: #fff; font-size: 18px; font-weight: 600; }
-        .card-quote { color: rgba(255,255,255,0.5); font-size: 13px; font-style: italic; }
-        .card-status { display: flex; align-items: center; gap: 8px; color: var(--accent-green); padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
         
         .particles { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
         .particle { position: absolute; width: 4px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 50%; animation: fall 15s linear infinite; }
@@ -65,138 +57,409 @@
     <div class="game-container">
         <canvas id="gameCanvas"></canvas>
         <div class="top-bar">
-            <div class="game-title">🏫 Class Life</div>
-            <div class="time-box"><div class="current-time" id="currentTime">10:42</div><div class="current-date" id="currentDate">2026年3月16日(月)</div></div>
+            <div class="game-title">🏫 Class Life 平行世界教室</div>
+            <div class="time-box"><div class="current-time" id="currentTime">10:42</div><div class="current-date" id="currentDate">2026年3月16日 星期一</div></div>
         </div>
-        <div class="class-toast" id="classToast">📚 数学课 - 藤原先生</div>
+        <div class="class-toast" id="classToast">📚 数学课 - 张老师</div>
         <div class="particles" id="particles"></div>
         <div class="bottom-bar">
             <div class="user-box"><div class="avatar">😎</div><div class="user-info"><div class="user-name">你</div><div class="user-status">专注听课中</div></div></div>
-            <div class="stats"><div class="stat">👥 12人在线</div><div class="stat">🏠 2年B組</div><div class="stat">📅 第2学期</div></div>
+            <div class="stats"><div class="stat">👥 12人在线</div><div class="stat">🏠 高二(3)班</div><div class="stat">📅 第二学期</div></div>
         </div>
-        <div class="student-card" id="studentCard"><div class="card-header"><div class="card-avatar" id="cardAvatar">👦</div><div><div class="card-name" id="cardName">小明</div><div class="card-quote" id="cardQuote">"今天也要加油！"</div></div></div><div class="card-status" id="cardStatus">📖 正在专注听课</div></div>
     </div>
     <script>
+        // 学生数据 - 中国风格名字
         const students = [
-            {name:'小明',x:0.15,y:0.38,status:'focus',color:'#A8D4E6',hair:'#5D8AA8',quote:'今天也要加油！'},
-            {name:'小红',x:0.30,y:0.38,status:'focus',color:'#FFB7C5',hair:'#8B4557',quote:'好想快点下课呀～'},
-            {name:'小刚',x:0.45,y:0.38,status:'daydream',color:'#A8D4E6',hair:'#5D8AA8',quote:'窗外的小鸟...'},
-            {name:'小美',x:0.60,y:0.38,status:'focus',color:'#FFB7C5',hair:'#8B4557',quote:'这道题好难啊'},
-            {name:'小强',x:0.75,y:0.38,status:'active',color:'#A8D4E6',hair:'#5D8AA8',quote:'老师！我知道！'},
-            {name:'小芳',x:0.15,y:0.55,status:'daydream',color:'#FFB7C5',hair:'#8B4557',quote:'中午吃什么呢'},
-            {name:'小军',x:0.30,y:0.55,status:'focus',color:'#A8D4E6',hair:'#5D8AA8',quote:'认真听讲中...'},
-            {name:'小兰',x:0.45,y:0.55,status:'dozing',color:'#FFB7C5',hair:'#8B4557',quote:'zzz...'},
-            {name:'小杰',x:0.60,y:0.55,status:'focus',color:'#A8D4E6',hair:'#5D8AA8',quote:'笔记要做好'},
-            {name:'小琴',x:0.75,y:0.55,status:'focus',color:'#FFB7C5',hair:'#8B4557',quote:'好困啊...'},
-            {name:'小浩',x:0.15,y:0.72,status:'focus',color:'#A8D4E6',hair:'#5D8AA8',quote:'考试加油！'},
-            {name:'小霞',x:0.30,y:0.72,status:'active',color:'#FFB7C5',hair:'#8B4557',quote:'有人要借笔吗'},
-            {name:'小龙',x:0.45,y:0.72,status:'daydream',color:'#A8D4E6',hair:'#5D8AA8',quote:'放学去打球'},
-            {name:'小燕',x:0.60,y:0.72,status:'focus',color:'#FFB7C5',hair:'#8B4557',quote:'这道题我会！'},
-            {name:'小虎',x:0.75,y:0.72,status:'focus',color:'#A8D4E6',hair:'#5D8AA8',quote:'肚子饿了...'}
+            {name:'张伟',x:0.12,y:0.42,status:'focus',color:'#A8D4E6',hair:'#2C3E50',quote:'今天也要加油！'},
+            {name:'李娜',x:0.28,y:0.42,status:'focus',color:'#FFB7C5',hair:'#8B4513',quote:'好想快点下课呀～'},
+            {name:'王强',x:0.44,y:0.42,status:'daydream',color:'#A8D4E6',hair:'#1a1a1a',quote:'窗外的小鸟...'},
+            {name:'刘芳',x:0.60,y:0.42,status:'focus',color:'#FFB7C5',hair:'#8B0000',quote:'这道题好难啊'},
+            {name:'陈刚',x:0.76,y:0.42,status:'active',color:'#A8D4E6',hair:'#4a3728',quote:'老师！我知道！'},
+            {name:'赵敏',x:0.12,y:0.58,status:'daydream',color:'#FFB7C5',hair:'#D2691E',quote:'中午吃什么呢'},
+            {name:'孙杰',x:0.28,y:0.58,status:'focus',color:'#A8D4E6',hair:'#2F4F4F',quote:'认真听讲中...'},
+            {name:'周丽',x:0.44,y:0.58,status:'dozing',color:'#FFB7C5',hair:'#800080',quote:'zzz...'},
+            {name:'吴涛',x:0.60,y:0.58,status:'focus',color:'#A8D4E6',hair:'#556B2F',quote:'笔记要做好'},
+            {name:'郑雪',x:0.76,y:0.58,status:'focus',color:'#FFB7C5',hair:'#FFC0CB',quote:'好困啊...'},
+            {name:'钱程',x:0.12,y:0.74,status:'focus',color:'#A8D4E6',hair:'#8B008B',quote:'考试加油！'},
+            {name:'孙悦',x:0.28,y:0.74,status:'active',color:'#FFB7C5',hair:'#FF6347',quote:'有人要借笔吗'},
+            {name:'李龙',x:0.44,y:0.74,status:'daydream',color:'#A8D4E6',hair:'#006400',quote:'放学去打球'},
+            {name:'王燕',x:0.60,y:0.74,status:'focus',color:'#FFB7C5',hair:'#FF1493',quote:'这道题我会！'},
+            {name:'刘虎',x:0.76,y:0.74,status:'focus',color:'#A8D4E6',hair:'#696969',quote:'肚子饿了...'}
         ];
+        
         const canvas = document.getElementById('gameCanvas'), ctx = canvas.getContext('2d');
-        let W, H, t = 0, clouds = Array(3).fill(0).map(()=>({x:Math.random()*200,y:30+Math.random()*50,size:40+Math.random()*30,speed:0.3+Math.random()*0.3}));
-        const studentCard = document.getElementById('studentCard');
+        let W, H, t = 0;
+        
+        // 2.5D 视角参数
+        const ISO_ANGLE = 0.6; // 斜视角角度
+        const ISO_SCALE = 0.5;  // 垂直压缩比例
         
         function resize() { const c=canvas.parentElement; W=c.clientWidth; H=c.clientHeight; canvas.width=W*2; canvas.height=H*2; canvas.style.width=W+'px'; canvas.style.height=H+'px'; ctx.scale(2,2); }
+        
+        // 颜色辅助
         function c(color,p){let N=parseInt(color.slice(1),16),A=Math.round(2.55*p),R=(N>>16)+A,G=(N>>8&255)+A,B=(N&255)+A;return'#'+(0x1000000+(R<255?R>0?R:0:255)*65536+(G<255?G>0?G:0:255)*256+(B<255?B>0?B:0:255)).toString(16).slice(1);}
         
-        function drawRoom() {
-            const wallH = H*0.78;
-            const g = ctx.createLinearGradient(0,0,0,wallH); g.addColorStop(0,'#F5EBE0'); g.addColorStop(1,'#E8DED3');
-            ctx.fillStyle=g; ctx.fillRect(0,0,W,wallH);
-            ctx.fillStyle='rgba(0,0,0,0.02)'; for(let i=0;i<W;i+=12)for(let j=0;j<wallH;j+=12)if(Math.random()>.7){ctx.beginPath();ctx.arc(i,j,1,0,7);ctx.fill()}
-            ctx.fillStyle='rgba(0,0,0,0.1)'; ctx.fillRect(0,wallH-4,W,4);
-            const fg=H-wallH, fgG=ctx.createLinearGradient(0,wallH,0,H); fgG.addColorStop(0,'#C9A87C'); fgG.addColorStop(1,'#A88B5E');
-            ctx.fillStyle=fgG; ctx.fillRect(0,wallH,W,fg);
-            ctx.strokeStyle='rgba(0,0,0,0.06)'; for(let i=25;i<W;i+=35){ctx.beginPath();ctx.moveTo(i,wallH);ctx.lineTo(i,H);ctx.stroke()}
-        }
-        
-        function drawWindows() {
-            const ww=W*.13, wh=H*.4, wy=H*.08;
-            [0.1,0.43,0.76].forEach((p,i)=>{
-                const x=W*p-ww/2;
-                ctx.fillStyle='#fff'; ctx.fillRect(x-8,wy-8,ww+16,wh+16);
-                const sg=ctx.createLinearGradient(x,wy,x,wy+wh); sg.addColorStop(0,'#87CEEB'); sg.addColorStop(1,'#B8E0F0');
-                ctx.fillStyle=sg; ctx.fillRect(x,wy,ww,wh);
-                const cloud=clouds[i]; drawCloud(x+ww/2+cloud.x,wy+cloud.y,cloud.size);
-                ctx.strokeStyle='rgba(255,255,255,0.9)'; ctx.lineWidth=5;
-                ctx.beginPath();ctx.moveTo(x+ww/2,wy+5);ctx.lineTo(x+ww/2,wy+wh-5);ctx.stroke();
-                ctx.beginPath();ctx.moveTo(x+5,wy+wh/2);ctx.lineTo(x+ww-5,wy+wh/2);ctx.stroke();
-                drawCurtain(x,wy,ww,wh);
-            });
-        }
-        function drawCloud(x,y,s){ctx.fillStyle='rgba(255,255,255,0.9)';ctx.beginPath();ctx.arc(x,y,s*.4,0,7);ctx.arc(x+s*.3,y-s*.1,s*.3,0,7);ctx.arc(x+s*.6,y,s*.35,0,7);ctx.fill();}
-        function drawCurtain(x,y,w,h){const cw=w*.2;
-            const lg=ctx.createLinearGradient(x,y,x+cw,y);lg.addColorStop(0,'#E8A0B0');lg.addColorStop(1,'#FFB7C5');
-            ctx.fillStyle=lg;ctx.beginPath();ctx.moveTo(x,y);ctx.quadraticCurveTo(x+cw*.5,y+h*.2,x+cw,y+h*.4);ctx.quadraticCurveTo(x+cw*.7,y+h*.7,x+cw*.5,y+h*.9);ctx.quadraticCurveTo(x+cw*.3,y+h,x,y+h);ctx.fill();
-            const rg=ctx.createLinearGradient(x+w,y,x+w-cw,y);rg.addColorStop(0,'#E8A0B0');rg.addColorStop(1,'#FFB7C5');
-            ctx.fillStyle=rg;ctx.beginPath();ctx.moveTo(x+w,y);ctx.quadraticCurveTo(x+w-cw*.5,y+h*.2,x+w-cw,y+h*.4);ctx.quadraticCurveTo(x+w-cw*.7,y+h*.7,x+w-cw*.5,y+h*.9);ctx.quadraticCurveTo(x+w-cw*.3,y+h,x+w,y+h);ctx.fill();
-        }
-        
-        function drawBoard() {
-            const bw=W*.36, bh=H*.27, bx=W/2-bw/2, by=H*.1;
-            ctx.fillStyle='#7A5A14'; ctx.fillRect(bx-12,by-12,bw+24,bh+24);
-            const bg=ctx.createLinearGradient(bx,by,bx,by+bh); bg.addColorStop(0,'#4A6558'); bg.addColorStop(1,'#3D5A47');
-            ctx.fillStyle=bg; ctx.fillRect(bx,by,bw,bh);
-            ctx.fillStyle='#F5F5DC'; ctx.font=`bold ${bh*.3}px "Zen Maru Gothic"`; ctx.textAlign='center';
-            ctx.fillText('数 学',bx+bw/2,by+bh*.45);
-            ctx.font=`${bh*.16}px "Zen Maru Gothic"`; ctx.fillText('～ 藤原先生 ～',bx+bw/2,by+bh*.72);
-            ctx.fillStyle='#5D4A0F'; ctx.fillRect(bx+20,by+bh-10,bw-40,12);
-        }
-        
-        function drawPodium() {
-            const pw=W*.26, ph=H*.11, px=W/2-pw/2, py=H*.68;
-            const pg=ctx.createLinearGradient(px,py,px,py+ph); pg.addColorStop(0,'#8B6914'); pg.addColorStop(1,'#6B4D0F');
-            ctx.fillStyle=pg; ctx.fillRect(px,py,pw,ph);
-            ctx.fillStyle='#5D4A0F'; ctx.fillRect(px+20,py-15,pw-40,18);
-        }
-        
-        function drawDesks() {
-            const dw=W*.10, dh=H*.09, sy=H*.42, gy=H*.17, gx=W*.15, sx=W*.17;
-            for(let r=0;r<3;r++)for(let col=0;col<5;col++){
-                const x=sx+col*gx, y=sy+r*gy;
-                ctx.fillStyle='#A67B4F'; ctx.fillRect(x+5,y+dh*.35,5,dh*.65); ctx.fillRect(x+dw-10,y+dh*.35,5,dh*.65);
-                const dg=ctx.createLinearGradient(x,y,x,y+dh*.35); dg.addColorStop(0,'#C4956A'); dg.addColorStop(1,'#A67B4F');
-                ctx.fillStyle=dg; ctx.beginPath(); ctx.roundRect(x,y,dw,dh*.35,3); ctx.fill();
+        // 绘制2.5D教室 - 斜视角
+        function drawClassroom() {
+            const wallH = H * 0.65;
+            
+            // 墙壁 - 带渐变
+            const wallG = ctx.createLinearGradient(0, 0, 0, wallH);
+            wallG.addColorStop(0, '#E8E0D5');
+            wallG.addColorStop(1, '#D5C9B8');
+            ctx.fillStyle = wallG;
+            ctx.fillRect(0, 0, W, wallH);
+            
+            // 墙壁纹理
+            ctx.fillStyle = 'rgba(0,0,0,0.02)';
+            for(let i=0;i<W;i+=15)for(let j=0;j<wallH;j+=15)if(Math.random()>.7){ctx.beginPath();ctx.arc(i,j,1,0,7);ctx.fill()}
+            
+            // 地板 - 2.5D透视效果
+            const floorY = wallH;
+            const floorH = H - floorY;
+            
+            // 地板渐变 - 模拟斜视角
+            const floorG = ctx.createLinearGradient(0, floorY, W * 0.3, H);
+            floorG.addColorStop(0, '#C9A86C');
+            floorG.addColorStop(0.5, '#B8956A');
+            floorG.addColorStop(1, '#A6855A');
+            ctx.fillStyle = floorG;
+            ctx.beginPath();
+            ctx.moveTo(0, floorY);
+            ctx.lineTo(W, floorY);
+            ctx.lineTo(W, H);
+            ctx.lineTo(W * 0.3, H);
+            ctx.lineTo(0, floorY);
+            ctx.fill();
+            
+            // 地板线条 - 透视
+            ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+            ctx.lineWidth = 1;
+            for(let i = 0; i < 8; i++) {
+                const startX = W * i * 0.04;
+                const endX = W * 0.3 + (W - W * 0.3) * i / 7;
+                ctx.beginPath();
+                ctx.moveTo(startX, floorY);
+                ctx.lineTo(endX, H);
+                ctx.stroke();
             }
         }
         
-        function drawStudents() {
-            students.forEach(s=>{
-                const x=W*s.x, y=H*s.y, size=Math.min(W,H)*.05;
-                ctx.fillStyle='rgba(0,0,0,0.15)'; ctx.beginPath(); ctx.ellipse(x,y+size*.7,size*.5,size*.12,0,0,7); ctx.fill();
-                const bg=ctx.createLinearGradient(x-size*.5,y,x+size*.5,y); bg.addColorStop(0,s.color); bg.addColorStop(1,c(s.color,-20));
-                ctx.fillStyle=bg; ctx.beginPath(); ctx.arc(x,y,size*.6,0,7); ctx.fill();
-                ctx.fillStyle=s.hair; ctx.beginPath(); ctx.arc(x,y-size*.1,size*.4,Math.PI,0); ctx.fill();
-                ctx.beginPath(); ctx.ellipse(x-size*.25,y,size*.12,size*.2,-.3,0,7); ctx.fill(); ctx.beginPath(); ctx.ellipse(x+size*.25,y,size*.12,size*.2,.3,0,7); ctx.fill();
-                ctx.fillStyle='#333'; const ey=y-size*.05;
-                ctx.beginPath(); ctx.ellipse(x-size*.15,ey,3,4,0,0,7); ctx.fill(); ctx.beginPath(); ctx.ellipse(x+size*.15,ey,3,4,0,0,7); ctx.fill();
-                if(s.status==='daydream'){ctx.strokeStyle='#333';ctx.lineWidth=1;ctx.beginPath();ctx.arc(x+size*.25,ey-10,4,.2,Math.PI-.2);ctx.stroke();}
-                else if(s.status==='dozing'){ctx.fillStyle='#FFB7C5';ctx.beginPath();ctx.ellipse(x+size*.1,y+size*.25,size*.15,size*.08,.2,0,7);ctx.fill();ctx.fillStyle='#333';ctx.font=`${size*.25}px Arial`;ctx.textAlign='center';ctx.fillText('Z',x+size*.55,y-size*.5+Math.sin(t*.003)*3);}
-                drawIcon(x+size*.55,y-size*.6,s.status);
+        // 绘制窗户
+        function drawWindows() {
+            const ww = W * 0.12, wh = H * 0.35;
+            const wy = H * 0.08;
+            const positions = [0.1, 0.43, 0.76];
+            
+            positions.forEach((pos, idx) => {
+                const x = W * pos - ww/2;
+                
+                // 窗户框
+                ctx.fillStyle = '#F5F5F5';
+                ctx.fillRect(x - 8, wy - 8, ww + 16, wh + 16);
+                
+                // 天空
+                const skyG = ctx.createLinearGradient(x, wy, x, wy + wh);
+                skyG.addColorStop(0, '#87CEEB');
+                skyG.addColorStop(1, '#B8E0F0');
+                ctx.fillStyle = skyG;
+                ctx.fillRect(x, wy, ww, wh);
+                
+                // 窗框
+                ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(x + ww/2, wy + 5);
+                ctx.lineTo(x + ww/2, wy + wh - 5);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x + 5, wy + wh/2);
+                ctx.lineTo(x + ww - 5, wy + wh/2);
+                ctx.stroke();
+                
+                // 窗帘 - 中国风格红色
+                drawCurtain(x, wy, ww, wh);
             });
         }
-        function drawIcon(x,y,s){ctx.font=`${Math.min(W,H)*.022}px Arial`;ctx.textAlign='center';const fy=y+Math.sin(t*.002)*4;switch(s){case'focus':ctx.fillText('📖',x,y);break;case'daydream':ctx.fillText('🌸',x,fy);break;case'dozing':ctx.fillText('💤',x,fy);break;case'active':ctx.fillText('✋',x,y);break;}}
         
-        function drawDecorations() {
-            const cx=W*.92, cy=H*.07, cr=30;
-            ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(cx,cy,cr,0,7);ctx.fill();ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.stroke();
-            const now=new Date(), ha=(now.getHours()+now.getMinutes()/60)/12*6.28-1.57, ma=now.getMinutes()/60*6.28-1.57;
-            ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(ha)*15,cy+Math.sin(ha)*15);ctx.stroke();
-            ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(ma)*22,cy+Math.sin(ma)*22);ctx.stroke();
-            const dx=W*.08, dy=H*.1;
-            ctx.fillStyle='#FFB7C5';ctx.beginPath();ctx.roundRect(dx-35,dy-20,70,40,8);ctx.fill();
-            ctx.fillStyle='#4A403A';ctx.font='bold 16px "Zen Maru Gothic"';ctx.textAlign='center';ctx.fillText('2年B組',dx,dy+6);
+        // 绘制窗帘 - 中国风
+        function drawCurtain(x, y, w, h) {
+            const cw = w * 0.2;
+            const curtainG = ctx.createLinearGradient(x, y, x + cw, y);
+            curtainG.addColorStop(0, '#8B0000');
+            curtainG.addColorStop(1, '#DC143C');
+            ctx.fillStyle = curtainG;
+            
+            // 左窗帘
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.quadraticCurveTo(x + cw * 0.3, y + h * 0.3, x + cw * 0.8, y + h * 0.5);
+            ctx.quadraticCurveTo(x + cw * 0.5, y + h * 0.8, x, y + h * 0.85);
+            ctx.lineTo(x, y);
+            ctx.fill();
+            
+            // 右窗帘
+            const rightG = ctx.createLinearGradient(x + w, y, x + w - cw, y);
+            rightG.addColorStop(0, '#8B0000');
+            rightG.addColorStop(1, '#DC143C');
+            ctx.fillStyle = rightG;
+            ctx.beginPath();
+            ctx.moveTo(x + w, y);
+            ctx.quadraticCurveTo(x + w - cw * 0.3, y + h * 0.3, x + w - cw * 0.8, y + h * 0.5);
+            ctx.quadraticCurveTo(x + w - cw * 0.5, y + h * 0.8, x + w, y + h * 0.85);
+            ctx.lineTo(x + w, y);
+            ctx.fill();
         }
         
-        function draw(){t=Date.now();ctx.clearRect(0,0,W,H);clouds.forEach(c=>{c.x+=c.speed;if(c.x>200)c.x=-100;});drawRoom();drawWindows();drawBoard();drawDesks();drawStudents();drawPodium();drawDecorations();requestAnimationFrame(draw);}
+        // 绘制黑板
+        function drawBlackboard() {
+            const bw = W * 0.35, bh = H * 0.28;
+            const bx = W * 0.5 - bw/2, by = H * 0.08;
+            
+            // 黑板框 - 木质
+            ctx.fillStyle = '#5D4037';
+            ctx.fillRect(bx - 12, by - 12, bw + 24, bh + 24);
+            
+            // 黑板面
+            const boardG = ctx.createLinearGradient(bx, by, bx, by + bh);
+            boardG.addColorStop(0, '#2E4A3E');
+            boardG.addColorStop(1, '#1E3A2E');
+            ctx.fillStyle = boardG;
+            ctx.fillRect(bx, by, bw, bh);
+            
+            // 板书
+            ctx.fillStyle = '#F5F5DC';
+            ctx.font = `bold ${bh * 0.3}px "Noto Sans SC"`;
+            ctx.textAlign = 'center';
+            ctx.fillText('数 学', bx + bw/2, by + bh * 0.45);
+            ctx.font = `${bh * 0.15}px "Noto Sans SC"`;
+            ctx.fillText('—— 张老师 ——', bx + bw/2, by + bh * 0.72);
+            
+            // 粉笔槽
+            ctx.fillStyle = '#4A3728';
+            ctx.fillRect(bx + 20, by + bh - 10, bw - 40, 12);
+        }
         
-        function load(){const lb=document.getElementById('loadingBar'),ls=document.getElementById('loadingScreen');let p=0;const iv=setInterval(()=>{p+=Math.random()*25;if(p>=100){p=100;clearInterval(iv);setTimeout(()=>{ls.classList.add('hidden');showToast();},500);}lb.style.width=p+'%';},150);}
-        function showToast(){document.getElementById('classToast').classList.add('show');setTimeout(()=>document.getElementById('classToast').classList.remove('show'),4000);}
-        function particles(){const p=document.getElementById('particles');for(let i=0;i<25;i++){const d=document.createElement('div');d.className='particle';d.style.left=Math.random()*100+'%';d.style.animationDelay=Math.random()*15+'s';d.style.animationDuration=(10+Math.random()*10)+'s';p.appendChild(d);}}
-        function time(){const n=new Date();document.getElementById('currentTime').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');const m=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],d=['日','月','火','水','木','金','土'];document.getElementById('currentDate').textContent=m[n.getMonth()]+n.getDate()+'日('+d[n.getDay()]+')';}
-        resize();window.addEventListener('resize',resize);particles();time();setInterval(time,1000);load();draw();
+        // 绘制讲台 - 2.5D
+        function drawPodium() {
+            const pw = W * 0.25, ph = H * 0.12;
+            const px = W * 0.5 - pw/2, py = H * 0.68;
+            
+            // 2.5D 讲台 - 侧面
+            ctx.fillStyle = '#5D4037';
+            ctx.beginPath();
+            ctx.moveTo(px, py);
+            ctx.lineTo(px + pw, py);
+            ctx.lineTo(px + pw - 20, py + ph);
+            ctx.lineTo(px - 20, py + ph);
+            ctx.closePath();
+            ctx.fill();
+            
+            // 讲台正面
+            const podiumG = ctx.createLinearGradient(px, py, px, py + ph);
+            podiumG.addColorStop(0, '#8B6914');
+            podiumG.addColorStop(1, '#6B4D0F');
+            ctx.fillStyle = podiumG;
+            ctx.fillRect(px, py, pw, ph * 0.6);
+        }
+        
+        // 绘制课桌 - 2.5D斜视角
+        function drawDesks() {
+            const dw = W * 0.09, dh = H * 0.08;
+            const startX = W * 0.1, startY = H * 0.42;
+            const gapX = W * 0.19, gapY = H * 0.16;
+            
+            for(let row = 0; row < 3; row++) {
+                for(let col = 0; col < 5; col++) {
+                    const x = startX + col * gapX;
+                    const y = startY + row * gapY;
+                    
+                    // 2.5D课桌 - 带侧面
+                    const deskColor = '#C4956A';
+                    const deskDark = '#A67B4F';
+                    
+                    // 侧面
+                    ctx.fillStyle = deskDark;
+                    ctx.beginPath();
+                    ctx.moveTo(x, y + dh * 0.4);
+                    ctx.lineTo(x + dw, y + dh * 0.4);
+                    ctx.lineTo(x + dw - 8, y + dh);
+                    ctx.lineTo(x - 8, y + dh);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // 桌面
+                    const deskG = ctx.createLinearGradient(x, y, x, y + dh * 0.4);
+                    deskG.addColorStop(0, deskColor);
+                    deskG.addColorStop(1, deskDark);
+                    ctx.fillStyle = deskG;
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + dw, y);
+                    ctx.lineTo(x + dw - 8, y + dh * 0.4);
+                    ctx.lineTo(x - 8, y + dh * 0.4);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // 桌腿
+                    ctx.fillStyle = deskDark;
+                    ctx.fillRect(x + 5, y + dh * 0.4, 4, dh * 0.6);
+                    ctx.fillRect(x + dw - 12, y + dh * 0.4, 4, dh * 0.6);
+                }
+            }
+        }
+        
+        // 绘制学生 - 2.5D
+        function drawStudents() {
+            students.forEach(s => {
+                const x = W * s.x, y = H * s.y;
+                const size = Math.min(W, H) * 0.045;
+                
+                // 阴影
+                ctx.fillStyle = 'rgba(0,0,0,0.15)';
+                ctx.beginPath();
+                ctx.ellipse(x + 5, y + size * 0.7, size * 0.5, size * 0.15, 0.3, 0, 7);
+                ctx.fill();
+                
+                // 身体 - 2.5D
+                const bodyG = ctx.createLinearGradient(x - size*0.4, y, x + size*0.4, y);
+                bodyG.addColorStop(0, s.color);
+                bodyG.addColorStop(1, c(s.color, -20));
+                ctx.fillStyle = bodyG;
+                ctx.beginPath();
+                ctx.ellipse(x, y, size * 0.55, size * 0.6, 0, 0, 7);
+                ctx.fill();
+                
+                // 头发
+                ctx.fillStyle = s.hair;
+                ctx.beginPath();
+                ctx.ellipse(x, y - size * 0.15, size * 0.4, size * 0.35, 0, Math.PI, 0);
+                ctx.fill();
+                
+                // 眼睛
+                ctx.fillStyle = '#333';
+                const eyeY = y - size * 0.05;
+                if(s.status === 'dozing') {
+                    // 闭眼
+                    ctx.beginPath();
+                    ctx.moveTo(x - size * 0.15 - 3, eyeY);
+                    ctx.lineTo(x - size * 0.15 + 3, eyeY);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(x + size * 0.15 - 3, eyeY);
+                    ctx.lineTo(x + size * 0.15 + 3, eyeY);
+                    ctx.stroke();
+                    // 口水
+                    ctx.fillStyle = '#87CEEB';
+                    ctx.beginPath();
+                    ctx.ellipse(x + size * 0.1, y + size * 0.25, size * 0.08, size * 0.05, 0.3, 0, 7);
+                    ctx.fill();
+                } else if(s.status === 'daydream') {
+                    // 发呆 - 眼神飘忽
+                    const offsetX = Math.sin(t * 0.001) * 2;
+                    ctx.beginPath(); ctx.arc(x - size * 0.12 + offsetX, eyeY, 2.5, 0, 7); ctx.fill();
+                    ctx.beginPath(); ctx.arc(x + size * 0.12 + offsetX, eyeY, 2.5, 0, 7); ctx.fill();
+                } else {
+                    // 正常眼睛
+                    ctx.beginPath(); ctx.arc(x - size * 0.12, eyeY, 3, 0, 7); ctx.fill();
+                    ctx.beginPath(); ctx.arc(x + size * 0.12, eyeY, 3, 0, 7); ctx.fill();
+                }
+                
+                // 状态图标
+                drawStatusIcon(x + size * 0.5, y - size * 0.55, s.status);
+            });
+        }
+        
+        function drawStatusIcon(x, y, status) {
+            ctx.font = `${Math.min(W,H)*.02}px Arial`;
+            ctx.textAlign = 'center';
+            const fy = y + Math.sin(t * 0.002) * 3;
+            switch(status) {
+                case 'focus': ctx.fillText('📖', x, y); break;
+                case 'daydream': ctx.fillText('🌸', x, fy); break;
+                case 'dozing': ctx.fillText('💤', x, fy); break;
+                case 'active': ctx.fillText('✋', x, y); break;
+            }
+        }
+        
+        // 绘制装饰
+        function drawDecorations() {
+            // 班级牌
+            const signX = W * 0.06, signY = H * 0.1;
+            ctx.fillStyle = '#DC143C';
+            ctx.beginPath();
+            ctx.roundRect(signX - 40, signY - 20, 80, 40, 5);
+            ctx.fill();
+            ctx.fillStyle = '#FFD700';
+            ctx.font = 'bold 14px "Noto Sans SC"';
+            ctx.textAlign = 'center';
+            ctx.fillText('高二(3)班', signX, signY + 5);
+            
+            // 时钟
+            const clockX = W * 0.94, clockY = H * 0.07, clockR = 25;
+            ctx.fillStyle = '#fff';
+            ctx.beginPath(); ctx.arc(clockX, clockY, clockR, 0, 7); ctx.fill();
+            ctx.strokeStyle = '#333'; ctx.lineWidth = 2; ctx.stroke();
+            
+            const now = new Date();
+            const ha = (now.getHours() + now.getMinutes()/60) / 12 * 6.28 - 1.57;
+            const ma = now.getMinutes() / 60 * 6.28 - 1.57;
+            ctx.beginPath(); ctx.moveTo(clockX, clockY); ctx.lineTo(clockX + Math.cos(ha) * 12, clockY + Math.sin(ha) * 12); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(clockX, clockY); ctx.lineTo(clockX + Math.cos(ma) * 18, clockY + Math.sin(ma) * 18); ctx.stroke();
+        }
+        
+        function draw() {
+            t = Date.now();
+            ctx.clearRect(0, 0, W, H);
+            drawClassroom();
+            drawWindows();
+            drawBlackboard();
+            drawDesks();
+            drawStudents();
+            drawPodium();
+            drawDecorations();
+            requestAnimationFrame(draw);
+        }
+        
+        function load() {
+            const lb = document.getElementById('loadingBar'), ls = document.getElementById('loadingScreen');
+            let p = 0;
+            const iv = setInterval(() => {
+                p += Math.random() * 20;
+                if(p >= 100) { p = 100; clearInterval(iv); setTimeout(() => { ls.classList.add('hidden'); showToast(); }, 500); }
+                lb.style.width = p + '%';
+            }, 150);
+        }
+        
+        function showToast() { document.getElementById('classToast').classList.add('show'); setTimeout(() => document.getElementById('classToast').classList.remove('show'), 4000); }
+        
+        function particles() {
+            const p = document.getElementById('particles');
+            for(let i = 0; i < 20; i++) {
+                const d = document.createElement('div');
+                d.className = 'particle';
+                d.style.left = Math.random() * 100 + '%';
+                d.style.animationDelay = Math.random() * 15 + 's';
+                d.style.animationDuration = (10 + Math.random() * 10) + 's';
+                p.appendChild(d);
+            }
+        }
+        
+        function time() {
+            const n = new Date();
+            document.getElementById('currentTime').textContent = n.getHours().toString().padStart(2,'0') + ':' + n.getMinutes().toString().padStart(2,'0');
+            const m = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+            const d = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+            document.getElementById('currentDate').textContent = m[n.getMonth()] + n.getDate() + '日 ' + d[n.getDay()];
+        }
+        
+        resize();
+        window.addEventListener('resize', resize);
+        particles();
+        time();
+        setInterval(time, 1000);
+        load();
+        draw();
     </script>
 </body>
 </html>
