@@ -1,27 +1,30 @@
 extends Node2D
 
-# ========== 游戏数据 ==========
-var students_data = [
-	{"name": "张伟", "x": 150, "y": 380, "status": "focus", "color": Color(0.659, 0.831, 0.902), "quote": "今天也要加油！", "hair": Color(0.173, 0.243, 0.314), "mood": "happy"},
-	{"name": "李娜", "x": 280, "y": 380, "status": "focus", "color": Color(1, 0.718, 0.769), "quote": "好想快点下课呀～", "hair": Color(0.545, 0.271, 0.075), "mood": "bored"},
-	{"name": "王强", "x": 410, "y": 380, "status": "daydream", "color": Color(0.659, 0.831, 0.902), "quote": "窗外的小鸟...", "hair": Color(0.1, 0.1, 0.1), "mood": "relaxed"},
-	{"name": "刘芳", "x": 540, "y": 380, "status": "focus", "color": Color(1, 0.718, 0.769), "quote": "这道题好难啊", "hair": Color(0.545, 0, 0), "mood": "confused"},
-	{"name": "陈刚", "x": 670, "y": 380, "status": "active", "color": Color(0.659, 0.831, 0.902), "quote": "老师！我知道！", "hair": Color(0.29, 0.216, 0.157), "mood": "excited"},
-	{"name": "赵敏", "x": 150, "y": 480, "status": "daydream", "color": Color(1, 0.718, 0.769), "quote": "中午吃什么呢", "hair": Color(0.824, 0.412, 0.118), "mood": "thinking"},
-	{"name": "孙杰", "x": 280, "y": 480, "status": "focus", "color": Color(0.659, 0.831, 0.902), "quote": "认真听讲中...", "hair": Color(0.184, 0.31, 0.31), "mood": "focused"},
-	{"name": "周丽", "x": 410, "y": 480, "status": "dozing", "color": Color(1, 0.718, 0.769), "quote": "zzz...", "hair": Color(0.545, 0, 0.545), "mood": "sleepy"},
-	{"name": "吴涛", "x": 540, "y": 480, "status": "focus", "color": Color(0.659, 0.831, 0.902), "quote": "笔记要做好", "hair": Color(0.333, 0.42, 0.184), "mood": "studious"},
-	{"name": "郑雪", "x": 670, "y": 480, "status": "focus", "color": Color(1, 0.718, 0.769), "quote": "好困啊...", "hair": Color(1, 0.753, 0.796), "mood": "tired"},
-	{"name": "钱程", "x": 150, "y": 580, "status": "focus", "color": Color(0.659, 0.831, 0.902), "quote": "考试加油！", "hair": Color(0.545, 0, 0.545), "mood": "motivated"},
-	{"name": "孙悦", "x": 280, "y": 580, "status": "active", "color": Color(1, 0.718, 0.769), "quote": "有人要借笔吗", "hair": Color(1, 0.388, 0.278), "mood": "helpful"},
-	{"name": "李龙", "x": 410, "y": 580, "status": "daydream", "color": Color(0.659, 0.831, 0.902), "quote": "放学去打球", "hair": Color(0, 0.392, 0), "mood": "excited"},
-	{"name": "王燕", "x": 540, "y": 580, "status": "focus", "color": Color(1, 0.718, 0.769), "quote": "这道题我会！", "hair": Color(1, 0.078, 0.576), "mood": "happy"},
-	{"name": "刘虎", "x": 670, "y": 580, "status": "focus", "color": Color(0.659, 0.831, 0.902), "quote": "肚子饿了...", "hair": Color(0.412, 0.412, 0.412), "mood": "hungry"}
+# 纯 2.5D 等距视角教室 - 放置类游戏
+
+var students = [
+	{"name": "张伟", "gx": 1, "gy": 2, "status": "focus", "body": Color(0.66, 0.83, 0.90), "hair": Color(0.17, 0.24, 0.31), "mood": "happy"},
+	{"name": "李娜", "gx": 2, "gy": 2, "status": "focus", "body": Color(1, 0.72, 0.77), "hair": Color(0.55, 0.27, 0.08), "mood": "bored"},
+	{"name": "王强", "gx": 3, "gy": 2, "status": "daydream", "body": Color(0.66, 0.83, 0.90), "hair": Color(0.1, 0.1, 0.1), "mood": "relaxed"},
+	{"name": "刘芳", "gx": 4, "gy": 2, "status": "focus", "body": Color(1, 0.72, 0.77), "hair": Color(0.55, 0, 0), "mood": "confused"},
+	{"name": "陈刚", "gx": 5, "gy": 2, "status": "active", "body": Color(0.66, 0.83, 0.90), "hair": Color(0.29, 0.22, 0.16), "mood": "excited"},
+	{"name": "赵敏", "gx": 1, "gy": 3, "status": "daydream", "body": Color(1, 0.72, 0.77), "hair": Color(0.82, 0.41, 0.12), "mood": "thinking"},
+	{"name": "孙杰", "gx": 2, "gy": 3, "status": "focus", "body": Color(0.66, 0.83, 0.90), "hair": Color(0.18, 0.31, 0.31), "mood": "focused"},
+	{"name": "周丽", "gx": 3, "gy": 3, "status": "dozing", "body": Color(1, 0.72, 0.77), "hair": Color(0.55, 0, 0.55), "mood": "sleepy"},
+	{"name": "吴涛", "gx": 4, "gy": 3, "status": "focus", "body": Color(0.66, 0.83, 0.90), "hair": Color(0.33, 0.42, 0.18), "mood": "studious"},
+	{"name": "郑雪", "gx": 5, "gy": 3, "status": "focus", "body": Color(1, 0.72, 0.77), "hair": Color(1, 0.75, 0.80), "mood": "tired"},
+	{"name": "钱程", "gx": 1, "gy": 4, "status": "focus", "body": Color(0.66, 0.83, 0.90), "hair": Color(0.55, 0, 0.55), "mood": "motivated"},
+	{"name": "孙悦", "gx": 2, "gy": 4, "status": "active", "body": Color(1, 0.72, 0.77), "hair": Color(1, 0.39, 0.28), "mood": "helpful"},
+	{"name": "李龙", "gx": 3, "gy": 4, "status": "daydream", "body": Color(0.66, 0.83, 0.90), "hair": Color(0, 0.39, 0), "mood": "excited"},
+	{"name": "王燕", "gx": 4, "gy": 4, "status": "focus", "body": Color(1, 0.72, 0.77), "hair": Color(1, 0.08, 0.58), "mood": "happy"},
+	{"name": "刘虎", "gx": 5, "gy": 4, "status": "focus", "body": Color(0.66, 0.83, 0.90), "hair": Color(0.41, 0.41, 0.41), "mood": "hungry"}
 ]
 
-# 课程表数据
-var schedule_data = [
-	{"time": "08:30", "name": "朝读", "teacher": ""},
+var anim_timer = 0.0
+var font: Font
+
+var schedule = [
+	{"time": "08:30", "name": "早读", "teacher": ""},
 	{"time": "09:00", "name": "语文", "teacher": "王老师"},
 	{"time": "10:00", "name": "数学", "teacher": "张老师"},
 	{"time": "11:00", "name": "英语", "teacher": "李老师"},
@@ -31,318 +34,131 @@ var schedule_data = [
 	{"time": "16:00", "name": "放学", "teacher": ""}
 ]
 
-var student_nodes = []
-var current_class = {"name": "数学", "teacher": "张老师", "time": "10:00"}
-var time_timer = 0.0
-
-@onready var time_label = $UI/TopBar/TimeLabel
-@onready var date_label = $UI/TopBar/DateLabel
-@onready var class_info_label = $UI/TopBar/ClassInfo
-@onready var status_panel = $UI/StatusPanel
-@onready var player = $Player
-@onready var player_label = $Player/PlayerName
-
-var player_name = "你"
-
-# 状态图标
-var status_icons = {
-	"focus": "📖",
-	"daydream": "🌸",
-	"dozing": "💤",
-	"active": "✋"
-}
-
-# 心情颜色
-var mood_colors = {
-	"happy": Color(1, 0.9, 0.4),
-	"sad": Color(0.6, 0.7, 0.9),
-	"excited": Color(1, 0.7, 0.5),
-	"tired": Color(0.8, 0.8, 0.8),
-	"confused": Color(0.9, 0.8, 0.6),
-	"thinking": Color(0.7, 0.8, 1),
-	"focused": Color(0.6, 0.9, 0.7),
-	"studious": Color(0.8, 0.7, 1),
-	"bored": Color(0.7, 0.7, 0.7),
-	"relaxed": Color(0.7, 0.9, 0.8),
-	"sleepy": Color(0.8, 0.8, 0.9),
-	"motivated": Color(1, 0.8, 0.6),
-	"helpful": Color(0.9, 0.8, 0.7),
-	"hungry": Color(1, 0.6, 0.6)
-}
-
 func _ready():
-	# 创建学生节点
-	create_students()
-	# 更新时间显示
-	update_time_display()
-	# 更新课程显示
-	update_class_display()
-	
-	# 创建定时器
-	var timer = Timer.new()
-	timer.wait_time = 1.0
-	timer.timeout.connect(_on_timer_timeout)
-	add_child(timer)
-	timer.start()
+	font = ThemeDB.fallback_font
+	update_time()
 
 func _process(delta):
-	time_timer += delta
-	
-	# 更新学生动画
-	update_student_animations()
-	
-	# 更新玩家状态显示
-	update_player_label()
+	anim_timer += delta
+	queue_redraw()
 
-func create_students():
-	var students_container = $Classroom/Students
+func _draw():
+	draw_classroom()
+	draw_students()
+
+func grid_to_iso(gx, gy):
+	var tile_w = 70
+	var tile_h = 35
+	var x = (gx - gy) * tile_w + 640
+	var y = (gx + gy) * tile_h + 180
+	return Vector2(x, y)
+
+func draw_classroom():
+	# 墙壁
+	draw_rect(Rect2(0, 0, 1280, 350), Color(0.88, 0.85, 0.80))
+	# 地板
+	draw_rect(Rect2(0, 350, 1280, 370), Color(0.75, 0.62, 0.45))
+	# 地板线
+	for i in range(8):
+		draw_line(Vector2(0, 350 + i * 40), Vector2(1280, 350 + i * 40), Color(0.6, 0.5, 0.38, 0.3), 1.0)
 	
-	for i in range(students_data.size()):
-		var data = students_data[i]
-		var student = Node2D.new()
-		student.position = Vector2(data.x, data.y)
-		student.set_meta("data", data)
-		student.set_meta("index", i)
+	# 黑板
+	draw_rect(Rect2(340, 80, 600, 180), Color(0.18, 0.28, 0.22))
+	draw_rect(Rect2(335, 75, 610, 190), Color(0.45, 0.28, 0.08), false, 4)
+	
+	# 黑板文字
+	draw_string(font, Vector2(520, 160), "数  学", HORIZONTAL_ALIGNMENT_CENTER, -1, 48, Color(0.96, 0.96, 0.86))
+	draw_string(font, Vector2(580, 210), "—— 张老师 ——", HORIZONTAL_ALIGNMENT_CENTER, -1, 22, Color(0.78, 0.88, 0.78))
+	
+	# 讲台
+	var podium_pts = PackedVector2Array([Vector2(560, 340), Vector2(720, 340), Vector2(740, 400), Vector2(540, 400)])
+	draw_polygon(podium_pts, [Color(0.50, 0.28, 0.06)])
+	
+	# 窗户
+	for i in range(3):
+		var wx = 150 + i * 400
+		draw_rect(Rect2(wx - 10, 50, 140, 200), Color(0.90, 0.90, 0.88))
+		draw_rect(Rect2(wx, 60, 120, 180), Color(0.50, 0.75, 0.88))
+		# 窗帘
+		var c1 = PackedVector2Array([Vector2(wx, 60), Vector2(wx + 35, 60), Vector2(wx + 30, 180), Vector2(wx, 200)])
+		var c2 = PackedVector2Array([Vector2(wx + 120, 60), Vector2(wx + 85, 60), Vector2(wx + 90, 180), Vector2(wx + 120, 200)])
+		draw_polygon(c1, [Color(0.75, 0.15, 0.15, 0.8)])
+		draw_polygon(c2, [Color(0.75, 0.15, 0.15, 0.8)])
+
+func draw_students():
+	for s in students:
+		var pos = grid_to_iso(s.gx, s.gy)
 		
 		# 阴影
-		var shadow = Polygon2D.new()
-		var shadow_points = PackedVector2Array([
-			Vector2(-20, 20), Vector2(20, 20),
-			Vector2(15, 30), Vector2(-15, 30)
-		])
-		shadow.polygon = shadow_points
-		shadow.color = Color(0, 0, 0, 0.15)
-		student.add_child(shadow)
+		var shadow = PackedVector2Array([pos + Vector2(-18, 10), pos + Vector2(18, 10), pos + Vector2(22, 20), pos + Vector2(-22, 20)])
+		draw_polygon(shadow, [Color(0, 0, 0, 0.2)])
 		
 		# 身体
-		var body = Polygon2D.new()
-		var body_points = PackedVector2Array([
-			Vector2(-18, -30), Vector2(18, -30),
-			Vector2(22, 0), Vector2(18, 25),
-			Vector2(-18, 25), Vector2(-22, 0)
-		])
-		body.polygon = body_points
-		body.color = data.color
-		student.add_child(body)
+		var body = PackedVector2Array([pos + Vector2(-16, -28), pos + Vector2(16, -28), pos + Vector2(18, 0), pos + Vector2(16, 22), pos + Vector2(-16, 22), pos + Vector2(-18, 0)])
+		draw_polygon(body, [s.body])
 		
 		# 头发
-		var hair = Polygon2D.new()
-		var hair_points = PackedVector2Array([
-			Vector2(-20, -25), Vector2(20, -25),
-			Vector2(18, -10), Vector2(-18, -10)
-		])
-		hair.polygon = hair_points
-		hair.color = data.hair
-		student.add_child(hair)
+		var hair = PackedVector2Array([pos + Vector2(-16, -24), pos + Vector2(16, -24), pos + Vector2(14, -8), pos + Vector2(-14, -8)])
+		draw_polygon(hair, [s.hair])
 		
 		# 眼睛
-		var eyes = Node2D.new()
-		eyes.set_meta("base_y", -5)
-		student.add_child(eyes)
+		draw_rect(Rect2(pos.x - 8, pos.y - 5, 5, 5), Color(0.15, 0.15, 0.15))
+		draw_rect(Rect2(pos.x + 3, pos.y - 5, 5, 5), Color(0.15, 0.15, 0.15))
 		
-		var left_eye = Polygon2D.new()
-		left_eye.polygon = PackedVector2Array([Vector2(-8, -5), Vector2(-4, -5), Vector2(-4, -1), Vector2(-8, -1)])
-		left_eye.color = Color(0.2, 0.2, 0.2)
-		eyes.add_child(left_eye)
+		# 腮红
+		if s.mood == "happy" or s.mood == "excited":
+			draw_rect(Rect2(pos.x - 14, pos.y + 3, 6, 4), Color(1, 0.6, 0.6, 0.5))
+			draw_rect(Rect2(pos.x + 8, pos.y + 3, 6, 4), Color(1, 0.6, 0.6, 0.5))
 		
-		var right_eye = Polygon2D.new()
-		right_eye.polygon = PackedVector2Array([Vector2(4, -5), Vector2(8, -5), Vector2(8, -1), Vector2(4, -1)])
-		right_eye.color = Color(0.2, 0.2, 0.2)
-		eyes.add_child(right_eye)
+		# 名字
+		draw_string(font, Vector2(pos.x - 15, pos.y + 35), s.name, HORIZONTAL_ALIGNMENT_CENTER, -1, 14, Color.WHITE)
 		
-		eyes.set_meta("type", data.status)
+		# 状态
+		var status_y = pos.y - 45
+		if s.status == "daydream":
+			status_y += sin(anim_timer * 2) * 2
+		draw_string(font, Vector2(pos.x + 15, status_y), get_status_icon(s.status), HORIZONTAL_ALIGNMENT_CENTER, -1, 20)
 		
-		# 腮红 (某些心情)
-		if data.mood in ["happy", "excited", "bored"]:
-			var blush = Polygon2D.new()
-			blush.polygon = PackedVector2Array([Vector2(-15, 5), Vector2(-10, 8), Vector2(-10, 2)])
-			blush.color = Color(1, 0.6, 0.6, 0.4)
-			student.add_child(blush)
-		
-		# 名字标签
-		var name_label = Label.new()
-		name_label.text = data.name
-		name_label.position = Vector2(-25, 35)
-		name_label.add_theme_font_size_override("font_size", 14)
-		name_label.add_theme_color_override("font_color", Color.WHITE)
-		name_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.5))
-		name_label.add_theme_constant_override("shadow_offset_x", 1)
-		name_label.add_theme_constant_override("shadow_offset_y", 1)
-		student.add_child(name_label)
-		
-		# 状态图标
-		var status_label = Label.new()
-		status_label.text = status_icons[data.status]
-		status_label.position = Vector2(15, -50)
-		status_label.add_theme_font_size_override("font_size", 20)
-		student.add_child(status_label)
-		student.set_meta("status_label", status_label)
-		
-		# 心情气泡
-		var mood_bubble = Label.new()
-		mood_bubble.text = get_mood_emoji(data.mood)
-		mood_bubble.position = Vector2(25, -35)
-		mood_bubble.add_theme_font_size_override("font_size", 16)
-		student.add_child(mood_bubble)
-		student.set_meta("mood_bubble", mood_bubble)
-		
-		students_container.add_child(student)
-		student_nodes.append(student)
+		# 心情
+		draw_string(font, Vector2(pos.x - 25, pos.y - 38), get_mood_icon(s.mood), HORIZONTAL_ALIGNMENT_CENTER, -1, 16)
 
-func get_mood_emoji(mood):
-	var emojis = {
-		"happy": "😊",
-		"sad": "😢",
-		"excited": "🤩",
-		"tired": "😫",
-		"confused": "😕",
-		"thinking": "🤔",
-		"focused": "🙂",
-		"studious": "📚",
-		"bored": "😴",
-		"relaxed": "😌",
-		"sleepy": "😪",
-		"motivated": "💪",
-		"helpful": "🤝",
-		"hungry": "🍚"
+func get_status_icon(status):
+	var m = {"focus": "📖", "daydream": "🌸", "dozing": "💤", "active": "✋"}
+	return m.get(status, "📖")
+
+func get_mood_icon(mood):
+	var m = {
+		"happy": "😊", "sad": "😢", "excited": "🤩", "tired": "😫",
+		"confused": "😕", "thinking": "🤔", "focused": "🙂", "studious": "📚",
+		"bored": "😴", "relaxed": "😌", "sleepy": "😪", "motivated": "💪",
+		"helpful": "🤝", "hungry": "🍚"
 	}
-	return emojis.get(mood, "😐")
+	return m.get(mood, "😐")
 
-func update_student_animations():
-	var t = Time.get_ticks_msec() / 1000.0
+func update_time():
+	var now = Time.get_time_dict_from_system()
+	$UI/TopBar/TimeLabel.text = "%02d:%02d" % [now.hour, now.minute]
 	
-	for student in student_nodes:
-		var data = student.get_meta("data")
-		var status_label = student.get_meta("status_label")
-		var mood_bubble = student.get_meta("mood_bubble")
-		
-		# 状态图标动画
-		if data.status == "daydream":
-			status_label.position.y = -50 + sin(t * 2) * 3
-			mood_bubble.position.y = -35 + sin(t * 1.5) * 2
-		elif data.status == "dozing":
-			status_label.position.y = -50 + sin(t * 1) * 2
-			mood_bubble.position.y = -35 + sin(t * 0.8) * 1
-		else:
-			status_label.position.y = -50
-			mood_bubble.position.y = -35
-		
-		# 眼睛动画
-		var eyes = student.get_node_or_null("Node2D")
-		if eyes:
-			var eye_type = eyes.get_meta("type", "focus")
-			if eye_type == "daydream":
-				# 眼睛向上看
-				for child in eyes.get_children():
-					child.position.y = eyes.get_meta("base_y", -5) - 2
-			elif eye_type == "dozing":
-				# 闭眼
-				for child in eyes.get_children():
-					child.visible = false
-			else:
-				for child in eyes.get_children():
-					child.visible = true
-					child.position.y = eyes.get_meta("base_y", -5)
-
-func update_player_label():
-	player_label.text = player_name
-
-func _on_timer_timeout():
-	update_time_display()
-	update_class_display()
-
-func update_time_display():
-	var time_dict = Time.get_time_dict_from_system()
-	var hour = str(time_dict.hour).pad_zeros(2)
-	var minute = str(time_dict.minute).pad_zeros(2)
-	time_label.text = "%s:%s" % [hour, minute]
-	
-	var date_dict = Time.get_date_dict_from_system()
+	var date = Time.get_date_dict_from_system()
 	var months = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
-	var days = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"]
-	date_label.text = "%s年%s%s %s" % [date_dict.year, months[date_dict.month - 1], date_dict.day, days[date_dict.weekday]]
-
-func update_class_display():
-	# 根据当前时间确定课程
-	var time_dict = Time.get_time_dict_from_system()
-	var current_time_minutes = time_dict.hour * 60 + time_dict.minute
+	var days = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"]
+	$UI/TopBar/DateLabel.text = "%d年%s%d日 %s" % [date.year, months[date.month - 1], date.day, days[date.weekday]]
 	
-	# 找到当前课程
-	var current_class_data = schedule_data[0]
-	for i in range(schedule_data.size() - 1):
-		var class_time = schedule_data[i]
-		var next_class_time = schedule_data[i + 1]
-		
-		var class_minutes = int(class_time.time.split(":")[0]) * 60 + int(class_time.time.split(":")[1])
-		var next_class_minutes = int(next_class_time.time.split(":")[0]) * 60 + int(next_class_time.time.split(":")[1])
-		
-		if current_time_minutes >= class_minutes and current_time_minutes < next_class_minutes:
-			current_class_data = class_time
+	# 课程
+	var current_minutes = now.hour * 60 + now.minute
+	var current_class = schedule[0]
+	for i in range(schedule.size() - 1):
+		var t1 = schedule[i].time.split(":")
+		var t2 = schedule[i + 1].time.split(":")
+		var m1 = int(t1[0]) * 60 + int(t1[1])
+		var m2 = int(t2[0]) * 60 + int(t2[1])
+		if current_minutes >= m1 and current_minutes < m2:
+			current_class = schedule[i]
 			break
 	
-	current_class = current_class_data
-	
-	if current_class_data.name == "午休" or current_class_data.name == "放学":
-		class_info_label.text = "🏠 %s" % current_class_data.name
+	if current_class.name == "午休" or current_class.name == "放学":
+		$UI/TopBar/ClassInfo.text = "🏠 " + current_class.name
 	else:
-		class_info_label.text = "📚 %s - %s老师" % [current_class_data.name, current_class_data.teacher]
-
-func show_student_info(student_node):
-	var data = student_node.get_meta("data")
-	var vbox = $UI/StatusPanel/VBox
+		$UI/TopBar/ClassInfo.text = "📚 " + current_class.name + " - " + current_class.teacher + "老师"
 	
-	# 更新信息
-	vbox.get_node("Name").text = data.name
-	
-	var quote_label = vbox.get_node("Quote")
-	quote_label.text = "\"%s\"" % data.quote
-	
-	# 心情
-	var mood_label = vbox.get_node("Mood")
-	mood_label.text = get_mood_emoji(data.mood) + " " + get_mood_text(data.mood)
-	mood_label.visible = true
-	
-	# 状态
-	var status_text = ""
-	match data.status:
-		"focus": status_text = "📖 正在专注听课"
-		"daydream": status_text = "🌸 正在发呆"
-		"dozing": status_text = "💤 正在睡觉"
-		"active": status_text = "✋ 积极发言"
-	
-	vbox.get_node("Status").text = status_text
-	
-	# 显示面板
-	status_panel.visible = true
-	
-	# 定位到学生旁边
-	var student_pos = student_node.position
-	status_panel.position = Vector2(student_pos.x + 50, student_pos.y - 100)
-	
-	# 确保面板不超出屏幕
-	if status_panel.position.x > 900:
-		status_panel.position.x = student_pos.x - 250
-	if status_panel.position.y < 100:
-		status_panel.position.y = 100
-
-func hide_student_info():
-	status_panel.visible = false
-
-func get_mood_text(mood):
-	var texts = {
-		"happy": "心情很好",
-		"sad": "有点伤心",
-		"excited": "很兴奋",
-		"tired": "有点累",
-		"confused": "困惑不解",
-		"thinking": "在思考",
-		"focused": "很专注",
-		"studious": "爱学习",
-		"bored": "无聊困倦",
-		"relaxed": "很放松",
-		"sleepy": "昏昏欲睡",
-		"motivated": "动力十足",
-		"helpful": "乐于助人",
-		"hungry": "肚子饿了"
-	}
-	return texts.get(mood, "普通")
+	$UI/TopBar/OnlineCount.text = "👥 %d人在线" % students.size()
