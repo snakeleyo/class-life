@@ -1,0 +1,12 @@
+ea4bc82a6ad023ab7ee23ee620429895
+::res://::1773734644
+export_presets.cfg::TextFile::-1::1773734606::0::1::::<><>::
+icon.svg::CompressedTexture2D::4814223832785361087::1773720533::1773734624::1::::<><>::
+::res://export/::1773734644
+::res://export/web/::1773734644
+::res://scenes/::1773720630
+main.tscn::PackedScene::-1::1773720630::0::1::::<><>::res://scripts/main.gd<>res://scripts/player.gd
+::res://scripts/::1773720529
+main.gd::GDScript::-1::1773720519::0::1::::<>Node2D<>::
+player.gd::GDScript::-1::1773720529::0::1::::<>CharacterBody2D<>::
+::res://{scenes,scripts,resources}/::1773720415
