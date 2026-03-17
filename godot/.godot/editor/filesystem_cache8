@@ -9,6 +9,6 @@ index.icon.png::CompressedTexture2D::3688502380593652898::1773734647::1773735640
 index.png::CompressedTexture2D::2219303114025613821::1773734647::1773735640::1::::<><>::
 ::res://scenes/::1773737077
 main.tscn::PackedScene::-1::1773737077::0::1::::<><>::res://scripts/main.gd
-::res://scripts/::1773738242
-main.gd::GDScript::-1::1773738242::0::1::::<>Node2D<>::
+::res://scripts/::1773738487
+main.gd::GDScript::-1::1773738487::0::1::::<>Node2D<>::
 ::res://{scenes,scripts,resources}/::1773720415
